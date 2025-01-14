@@ -27,10 +27,20 @@ export const SignInButton = () => {
         displayName: user.displayName,
         photoURL: user.photoURL,
       })
-    } catch (error) {
+    } catch (error: unknown) {
       let errorMessage = 'An unknown error occurred'
       
-      if (error instanceof FirebaseAuthError) {
+      // Type guard to check if error is a FirebaseAuthError
+      const isFirebaseAuthError = (err: unknown): err is FirebaseAuthError => {
+        return (
+          typeof err === 'object' && 
+          err !== null && 
+          'code' in err && 
+          'message' in err
+        )
+      }
+
+      if (isFirebaseAuthError(error)) {
         switch (error.code) {
           case 'auth/popup-closed-by-user':
             errorMessage = 'Sign-in popup was closed before completing'
@@ -47,6 +57,9 @@ export const SignInButton = () => {
           default:
             errorMessage = error.message
         }
+      } else if (error instanceof Error) {
+        // Fallback for other Error types
+        errorMessage = error.message
       }
 
       console.error('Sign in error', error)
