@@ -1,3 +1,5 @@
+'use client'
+
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { auth } from '../../../firebase'
 import { useAuthStore } from '@/stores/authStore'
@@ -11,6 +13,7 @@ export const SignInButton = () => {
       const provider = new GoogleAuthProvider()
       const result = await signInWithPopup(auth, provider)
       const user = result.user
+      
       setUser({
         uid: user.uid,
         email: user.email,
@@ -18,6 +21,7 @@ export const SignInButton = () => {
         photoURL: user.photoURL,
       })
     } catch (error) {
+      console.error('Sign in error', error)
       setError(error instanceof Error ? error.message : 'Failed to sign in')
     }
   }
