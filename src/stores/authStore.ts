@@ -23,14 +23,45 @@ const initialState: AuthState = {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
-      setUser: (user: User) => set({ user, error: null }),
-      setError: (error: string | null) => set({ error }),
-      reset: () => set(initialState),
+      setUser: (user: User) => {
+        console.log('Setting user in auth store:', user)
+        
+        // Log current state before update
+        const currentUser = get().user
+        console.log('Current user before update:', currentUser)
+
+        // Perform the update
+        set({ 
+          user, 
+          error: null 
+        })
+
+        // Log state after update
+        console.log('User set in auth store. New state:', get().user)
+      },
+      setError: (error: string | null) => {
+        // Ensure error is not null or empty
+        if (error === null || error === '') {
+          console.warn('Attempted to set empty or null error')
+          return
+        }
+
+        console.error('Auth store error:', error)
+        set({ error })
+      },
+      reset: () => {
+        console.log('Resetting auth store')
+        set(initialState)
+      },
     }),
     {
       name: 'auth-storage',
+      // Optional: Add more detailed logging for persistence
+      onRehydrateStorage: (state) => {
+        console.log('Rehydrating auth store:', state)
+      }
     }
   )
 )

@@ -1,78 +1,188 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { 
-  signInWithPopup, 
-  GoogleAuthProvider, 
-  AuthError as FirebaseAuthError 
+  signInWithRedirect, 
+  GoogleAuthProvider,
+  getRedirectResult,
+  AuthErrorCodes,
+  getAuth,
+  browserLocalPersistence,
+  setPersistence,
 } from 'firebase/auth'
-import { auth, googleProvider } from '@/lib/firebase'
+import { FirebaseError } from 'firebase/app'
+import { firebaseService } from '@/lib/firebaseApp'
 import { useAuthStore } from '@/stores/authStore'
+import { useRouter } from 'next/navigation'
 
 export const SignInButton = () => {
   const [isLoading, setIsLoading] = useState(false)
   const setUser = useAuthStore((state) => state.setUser)
   const setError = useAuthStore((state) => state.setError)
+  const router = useRouter()
 
-  const signInWithGoogle = async () => {
-    setIsLoading(true)
-    setError(null) // Clear any previous errors
-
-    try {
-      // Configure provider to always show account selection
-      googleProvider.setCustomParameters({
-        prompt: 'select_account'
+  // Comprehensive error logging function
+  const logAuthenticationError = (error: unknown, context: string) => {
+    console.group('🔐 Authentication Error')
+    console.log('Context:', context)
+    
+    if (error instanceof FirebaseError) {
+      console.log('Firebase Error Code:', error.code)
+      console.log('Firebase Error Message:', error.message)
+      console.log('Firebase Error Details:', {
+        email: error.customData?.email,
+        credential: error.customData?.credential
       })
+    } else if (error instanceof Error) {
+      console.log('Standard Error:', error.message)
+      console.log('Error Name:', error.name)
+    } else {
+      console.log('Unknown Error Type:', error)
+    }
 
-      const result = await signInWithPopup(auth, googleProvider)
-      const user = result.user
-      
-      setUser({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-      })
-    } catch (error: unknown) {
-      let errorMessage = 'An unknown error occurred'
-      
-      // Type guard to check if error is a FirebaseAuthError
-      const isFirebaseAuthError = (err: unknown): err is FirebaseAuthError => {
-        return (
-          typeof err === 'object' && 
-          err !== null && 
-          'code' in err && 
-          'message' in err
-        )
+    // Attempt to log environment and configuration details
+    console.log('Environment:', {
+      nodeEnv: process.env.NODE_ENV,
+      firebaseConfig: {
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+        apiKeyPresent: !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY
       }
+    })
 
-      if (isFirebaseAuthError(error)) {
+    console.groupEnd()
+  }
+
+  // Robust redirect result handler
+  const handleRedirectResult = useCallback(async () => {
+    try {
+      const auth = getAuth()
+      console.log('Attempting to get redirect result with current auth instance...')
+      
+      // Set local persistence to improve redirect handling
+      await setPersistence(auth, browserLocalPersistence)
+      
+      const result = await getRedirectResult(auth)
+      
+      if (result) {
+        console.log('Redirect result received:', result.user)
+        const user = result.user
+        
+        // Validate user object
+        if (!user || !user.uid) {
+          console.warn('Invalid user object received')
+          setError('Authentication failed: Invalid user object')
+          return
+        }
+
+        // Set user in global state
+        setUser({
+          uid: user.uid,
+          email: user.email || '',
+          displayName: user.displayName || 'Anonymous',
+          photoURL: user.photoURL || '',
+        })
+
+        // Redirect to milestones page
+        router.push('/milestones')
+      } else {
+        console.log('No redirect result found')
+      }
+    } catch (error: unknown) {
+      logAuthenticationError(error, 'Redirect Result Handling')
+      
+      // More specific error handling
+      if (error instanceof FirebaseError) {
+        let errorMessage = 'Authentication failed'
         switch (error.code) {
-          case 'auth/popup-closed-by-user':
-            errorMessage = 'Sign-in was cancelled. Please try again.'
-            break
-          case 'auth/cancelled-popup-request':
-            errorMessage = 'Sign-in request was cancelled'
-            break
-          case 'auth/popup-blocked':
-            errorMessage = 'Popup was blocked by the browser. Please enable popups.'
-            break
           case 'auth/operation-not-allowed':
-            errorMessage = 'Google sign-in is not enabled for this application'
+            errorMessage = 'Google sign-in is not enabled for this project.'
+            break
+          case 'auth/unauthorized-domain':
+            errorMessage = 'This domain is not authorized for sign-in. Check Firebase Console settings.'
             break
           case 'auth/invalid-credential':
             errorMessage = 'Invalid credentials. Please try again.'
             break
+          case 'auth/user-disabled':
+            errorMessage = 'This user account has been disabled.'
+            break
           default:
-            errorMessage = error.message
+            errorMessage = error.message || 'An unexpected error occurred during authentication'
         }
+        
+        setError(errorMessage)
       } else if (error instanceof Error) {
-        // Fallback for other Error types
-        errorMessage = error.message
+        setError(error.message || 'An unexpected error occurred')
+      } else {
+        setError('An unknown authentication error occurred')
       }
+    }
+  }, [setUser, router, setError])
 
-      console.error('Sign in error', error)
-      setError(errorMessage)
+  // Handle redirect result on component mount and periodically
+  useEffect(() => {
+    handleRedirectResult()
+
+    // Set up a periodic check to handle delayed redirect results
+    const intervalId = setInterval(handleRedirectResult, 5000)
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId)
+  }, [handleRedirectResult])
+
+  const signInWithGoogle = async () => {
+    if (isLoading) return
+    
+    setIsLoading(true)
+    
+    try {
+      const { auth } = firebaseService
+      const provider = new GoogleAuthProvider()
+      
+      // Configure provider scopes and parameters
+      provider.addScope('profile')
+      provider.addScope('email')
+      provider.addScope('openid')
+      
+      // Set custom parameters for sign-in
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      })
+
+      console.group('🚀 Initiating Google Sign-In')
+      console.log('Current Environment:', process.env.NODE_ENV)
+      console.log('Auth Domain:', process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN)
+      console.log('Project ID:', process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID)
+      console.groupEnd()
+
+      // Set persistence before redirect
+      await setPersistence(auth, browserLocalPersistence)
+
+      // Initiate sign-in redirect
+      await signInWithRedirect(auth, provider)
+    } catch (error: unknown) {
+      logAuthenticationError(error, 'Sign-In Redirect')
+      
+      if (error instanceof FirebaseError) {
+        let errorMessage = 'Sign-in failed'
+        switch (error.code) {
+          case AuthErrorCodes.POPUP_CLOSED_BY_USER:
+            errorMessage = 'Sign-in was cancelled.'
+            break
+          case AuthErrorCodes.POPUP_BLOCKED:
+            errorMessage = 'Popup was blocked. Please enable popups.'
+            break
+          default:
+            errorMessage = error.message || 'An unexpected error occurred'
+        }
+        
+        setError(errorMessage)
+      } else if (error instanceof Error) {
+        setError(error.message || 'Sign-in failed')
+      } else {
+        setError('An unknown error occurred during sign-in')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -84,36 +194,10 @@ export const SignInButton = () => {
       disabled={isLoading}
       className={`
         ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}
-        text-white font-bold py-2 px-4 rounded flex items-center justify-center
+        text-white font-bold py-2 px-4 rounded flex items-center justify-center min-w-[200px]
       `}
     >
-      {isLoading ? (
-        <div className="flex items-center">
-          <svg 
-            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" 
-            xmlns="http://www.w3.org/2000/svg" 
-            fill="none" 
-            viewBox="0 0 24 24"
-          >
-            <circle 
-              className="opacity-25" 
-              cx="12" 
-              cy="12" 
-              r="10" 
-              stroke="currentColor" 
-              strokeWidth="4"
-            ></circle>
-            <path 
-              className="opacity-75" 
-              fill="currentColor" 
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <span>Signing in...</span>
-        </div>
-      ) : (
-        'Sign in with Google'
-      )}
+      {isLoading ? 'Signing in...' : 'Sign in with Google'}
     </button>
   )
 }

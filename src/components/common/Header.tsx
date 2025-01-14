@@ -1,32 +1,51 @@
 'use client'
 
-import { SignInButton } from '../auth/SignInButton'
+import Link from 'next/link'
+import { SignInButton } from '@/components/auth/SignInButton'
 import { useAuthStore } from '@/stores/authStore'
-import { signOut } from 'firebase/auth'
-import { auth } from '../../../firebase'
+import { firebaseService } from '@/lib/firebaseApp'
+import { FirebaseError } from 'firebase/app'
 
 export const Header = () => {
-  const user = useAuthStore((state) => state.user)
-  const reset = useAuthStore((state) => state.reset)
+  const { user, reset } = useAuthStore()
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth)
+      const { auth } = firebaseService
+      await auth.signOut()
       reset()
-    } catch (error) {
-      console.error('Sign out error', error)
+    } catch (error: unknown) {
+      let errorMessage = 'An unknown error occurred'
+      
+      if (error instanceof FirebaseError) {
+        errorMessage = error.message
+      } else if (error instanceof Error) {
+        errorMessage = error.message
+      }
+
+      console.error('Sign out error:', error)
     }
   }
 
   return (
-    <header className="w-full py-4 px-6 bg-white shadow-md">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dad&apos;s First Step</h1>
-        <nav>
+    <header className="bg-white shadow-md">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <Link href="/" className="text-2xl font-bold text-blue-600">
+          Dad&apos;s First Step
+        </Link>
+        
+        <nav className="flex items-center space-x-4">
           {user ? (
-            <div className="flex items-center gap-4">
-              <span>Welcome, {user.displayName}</span>
-              <button
+            <div className="flex items-center space-x-4">
+              {user.photoURL && (
+                <img 
+                  src={user.photoURL} 
+                  alt="Profile" 
+                  className="w-10 h-10 rounded-full"
+                />
+              )}
+              <span className="text-gray-800">{user.displayName}</span>
+              <button 
                 onClick={handleSignOut}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               >

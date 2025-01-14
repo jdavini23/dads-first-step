@@ -8,13 +8,14 @@ import {
   addDoc,
   deleteDoc
 } from 'firebase/firestore'
-import { db } from '../../firebase'
+import { firebaseService } from '@/lib/firebaseApp'
 import { UserMilestone, MilestoneCategory } from '@/types/milestone'
 
 const MILESTONES_COLLECTION = 'userMilestones'
 
 export const getMilestonesForUser = async (userId: string): Promise<UserMilestone[]> => {
   try {
+    const { db } = firebaseService
     const q = query(
       collection(db, MILESTONES_COLLECTION), 
       where('userId', '==', userId)
@@ -34,6 +35,7 @@ export const getMilestonesForUser = async (userId: string): Promise<UserMileston
 
 export const addUserMilestone = async (milestone: UserMilestone): Promise<string> => {
   try {
+    const { db } = firebaseService
     const docRef = await addDoc(collection(db, MILESTONES_COLLECTION), milestone)
     return docRef.id
   } catch (error) {
@@ -47,6 +49,7 @@ export const updateUserMilestone = async (
   updates: Partial<UserMilestone>
 ): Promise<void> => {
   try {
+    const { db } = firebaseService
     const milestoneRef = doc(db, MILESTONES_COLLECTION, milestoneId)
     await updateDoc(milestoneRef, updates)
   } catch (error) {
@@ -57,6 +60,7 @@ export const updateUserMilestone = async (
 
 export const deleteUserMilestone = async (milestoneId: string): Promise<void> => {
   try {
+    const { db } = firebaseService
     const milestoneRef = doc(db, MILESTONES_COLLECTION, milestoneId)
     await deleteDoc(milestoneRef)
   } catch (error) {
