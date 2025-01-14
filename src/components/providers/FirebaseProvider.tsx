@@ -30,11 +30,22 @@ const app: FirebaseApp = initializeApp(firebaseConfig)
 const auth: Auth = getAuth(app)
 const db: Firestore = getFirestore(app)
 
-// Connect to emulators in development
-if (process.env.NODE_ENV === 'development') {
-  console.warn('Using Firebase Authentication Emulator - DO NOT USE WITH PRODUCTION CREDENTIALS')
-  connectAuthEmulator(auth, 'http://localhost:9099')
-  connectFirestoreEmulator(db, 'localhost', 8080)
+// Determine if we should use emulators
+const shouldUseEmulators = () => {
+  // Only use emulators in local development
+  return process.env.NODE_ENV === 'development' && 
+         window.location.hostname === 'localhost'
+}
+
+// Connect to emulators if appropriate
+if (shouldUseEmulators()) {
+  try {
+    console.warn('🚨 Using Firebase Emulators - LOCAL DEVELOPMENT ONLY')
+    connectAuthEmulator(auth, 'http://localhost:9099')
+    connectFirestoreEmulator(db, 'localhost', 8080)
+  } catch (error) {
+    console.error('Failed to connect to Firebase emulators:', error)
+  }
 }
 
 export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
