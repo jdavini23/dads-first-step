@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { MilestoneTracker } from '@/components/features/MilestoneTracker'
 
 export default function Home() {
   return (
@@ -10,6 +11,8 @@ export default function Home() {
         <p className="text-center text-xl mb-4">
           Your companion in the journey of fatherhood
         </p>
+        
+        <MilestoneTracker />
       </div>
     </main>
   )
