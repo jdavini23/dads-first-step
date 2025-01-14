@@ -6,7 +6,7 @@ import {
   GoogleAuthProvider, 
   AuthError as FirebaseAuthError 
 } from 'firebase/auth'
-import { auth } from '../../../firebase'
+import { auth, googleProvider } from '../../../../firebase'
 import { useAuthStore } from '@/stores/authStore'
 
 export const SignInButton = () => {
@@ -19,8 +19,12 @@ export const SignInButton = () => {
     setError(null) // Clear any previous errors
 
     try {
-      const provider = new GoogleAuthProvider()
-      const result = await signInWithPopup(auth, provider)
+      // Configure provider to always show account selection
+      googleProvider.setCustomParameters({
+        prompt: 'select_account'
+      })
+
+      const result = await signInWithPopup(auth, googleProvider)
       const user = result.user
       
       setUser({
@@ -55,6 +59,9 @@ export const SignInButton = () => {
             break
           case 'auth/operation-not-allowed':
             errorMessage = 'Google sign-in is not enabled for this application'
+            break
+          case 'auth/invalid-credential':
+            errorMessage = 'Invalid credentials. Please try again.'
             break
           default:
             errorMessage = error.message

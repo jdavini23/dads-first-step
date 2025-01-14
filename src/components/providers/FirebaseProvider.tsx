@@ -14,15 +14,20 @@ const logPerformance = (name: string, startTime: number) => {
   }
 }
 
-// Firebase configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyCMxw5NbYFfTQlaTpBj5CUePhyTYKnMokI",
-  authDomain: "dads-first-step.firebaseapp.com",
-  projectId: "dads-first-step",
-  storageBucket: "dads-first-step.firebasestorage.app",
-  messagingSenderId: "1052702875901",
-  appId: "1:1052702875901:web:236a8dc28842b01810de94",
-  measurementId: "G-3KBF5JKTBZ"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+}
+
+// Validate configuration
+if (!firebaseConfig.apiKey) {
+  console.error('Firebase configuration is missing. Check your environment variables.')
 }
 
 // Initialize Firebase
@@ -34,6 +39,7 @@ const db: Firestore = getFirestore(app)
 const shouldUseEmulators = () => {
   // Only use emulators in local development
   return process.env.NODE_ENV === 'development' && 
+         typeof window !== 'undefined' && 
          window.location.hostname === 'localhost'
 }
 
