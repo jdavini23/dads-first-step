@@ -1,12 +1,39 @@
 'use client'
 
+import { Suspense, lazy, useEffect, useState } from 'react'
 import Image from "next/image";
-import { MilestoneTracker } from '@/components/features/MilestoneTracker'
 import { useAuthStore } from '@/stores/authStore'
-import { useEffect } from 'react'
+
+// Lazy load the MilestoneTracker
+const MilestoneTracker = lazy(() => 
+  import('@/components/features/MilestoneTracker').then(module => ({
+    default: module.MilestoneTracker
+  }))
+)
+
+// Performance monitoring function
+const logPerformance = (name: string, startTime: number) => {
+  const duration = performance.now() - startTime
+  if (duration > 50) {
+    console.warn(`Performance: ${name} took ${duration.toFixed(2)}ms`)
+  }
+}
 
 export default function Home() {
   const { user, error } = useAuthStore()
+  const [renderStartTime, setRenderStartTime] = useState<number | null>(null)
+
+  useEffect(() => {
+    // Start performance tracking
+    setRenderStartTime(performance.now())
+
+    // Log performance when component is fully rendered
+    return () => {
+      if (renderStartTime) {
+        logPerformance('Home component render', renderStartTime)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (error) {
@@ -26,16 +53,22 @@ export default function Home() {
         )}
 
         {user ? (
-          <div>
-            <h1 className="text-4xl font-bold text-center mb-8">
-              Welcome to Dad&apos;s First Step
-            </h1>
-            <p className="text-center text-xl mb-4">
-              Your companion in the journey of fatherhood
-            </p>
-            
-            <MilestoneTracker />
-          </div>
+          <Suspense fallback={
+            <div className="text-center text-xl">
+              Loading Milestone Tracker...
+            </div>
+          }>
+            <div>
+              <h1 className="text-4xl font-bold text-center mb-8">
+                Welcome to Dad&apos;s First Step
+              </h1>
+              <p className="text-center text-xl mb-4">
+                Your companion in the journey of fatherhood
+              </p>
+              
+              <MilestoneTracker />
+            </div>
+          </Suspense>
         ) : (
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-4">Welcome to Dad&apos;s First Step</h1>

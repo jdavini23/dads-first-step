@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useMilestoneStore } from '@/stores/milestoneStore'
 import { useAuthStore } from '@/stores/authStore'
 import { MilestoneCategory, UserMilestone } from '@/types/milestone'
@@ -16,35 +16,70 @@ export const MilestoneTracker = () => {
   } = useMilestoneStore()
 
   const [selectedCategory, setSelectedCategory] = useState<MilestoneCategory | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Memoize fetchMilestones to prevent unnecessary re-renders
+  const memoizedFetchMilestones = useCallback((uid: string) => {
+    fetchMilestones(uid)
+  }, [fetchMilestones])
 
   useEffect(() => {
     if (user?.uid) {
-      fetchMilestones(user.uid)
+      memoizedFetchMilestones(user.uid)
     }
-  }, [user?.uid, fetchMilestones])
+  }, [user?.uid, memoizedFetchMilestones])
 
-  const handleAddTemplate = async () => {
+  const handleAddTemplate = useCallback(async () => {
     if (!user?.uid) return
 
-    const templates = getMilestoneTemplates()
-    for (const template of templates) {
-      await addUserMilestone({
-        ...template,
-        userId: user.uid
-      })
+    setIsLoading(true)
+    try {
+      const templates = getMilestoneTemplates()
+      for (const template of templates) {
+        await addUserMilestone({
+          ...template,
+          userId: user.uid
+        })
+      }
+
+      memoizedFetchMilestones(user.uid)
+    } catch (error) {
+      console.error('Failed to add templates', error)
+    } finally {
+      setIsLoading(false)
     }
+  }, [user?.uid, memoizedFetchMilestones])
 
-    fetchMilestones(user.uid)
-  }
-
-  const handleUpdateProgress = (milestone: UserMilestone, progress: number) => {
+  const handleUpdateProgress = useCallback((milestone: UserMilestone, progress: number) => {
     updateMilestone(milestone.id, { 
       progress, 
       completed: progress === 100 
     })
-  }
+  }, [updateMilestone])
 
-  const filteredMilestones = getFilteredMilestones()
+  // Memoize filtered milestones to prevent unnecessary re-renders
+  const filteredMilestones = useMemo(() => {
+    return selectedCategory 
+      ? milestones.filter(m => m.category === selectedCategory)
+      : milestones
+  }, [milestones, selectedCategory])
+
+  // Memoize category buttons to prevent unnecessary re-renders
+  const categoryButtons = useMemo(() => 
+    Object.values(MilestoneCategory).map((category) => (
+      <button
+        key={category}
+        onClick={() => setSelectedCategory(category)}
+        className={`px-4 py-2 rounded ${
+          selectedCategory === category 
+            ? 'bg-blue-500 text-white' 
+            : 'bg-gray-200 text-gray-800'
+        }`}
+      >
+        {category.charAt(0).toUpperCase() + category.slice(1)}
+      </button>
+    )), [selectedCategory]
+  )
 
   if (!user) {
     return <div>Please log in to track milestones</div>
@@ -55,19 +90,7 @@ export const MilestoneTracker = () => {
       <h2 className="text-2xl font-bold mb-4">Milestone Tracker</h2>
 
       <div className="mb-4 flex space-x-2">
-        {Object.values(MilestoneCategory).map((category) => (
-          <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
-            className={`px-4 py-2 rounded ${
-              selectedCategory === category 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-200 text-gray-800'
-            }`}
-          >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
-          </button>
-        ))}
+        {categoryButtons}
         <button 
           onClick={() => setSelectedCategory(null)}
           className="px-4 py-2 bg-gray-200 rounded"
@@ -78,9 +101,16 @@ export const MilestoneTracker = () => {
 
       <button 
         onClick={handleAddTemplate}
-        className="mb-4 px-4 py-2 bg-green-500 text-white rounded"
+        disabled={isLoading}
+        className={`
+          mb-4 px-4 py-2 rounded 
+          ${isLoading 
+            ? 'bg-gray-400 cursor-not-allowed' 
+            : 'bg-green-500 text-white hover:bg-green-600'
+          }
+        `}
       >
-        Add Default Milestones
+        {isLoading ? 'Adding...' : 'Add Default Milestones'}
       </button>
 
       <div className="space-y-4">
