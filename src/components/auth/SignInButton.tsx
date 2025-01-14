@@ -6,7 +6,7 @@ import {
   GoogleAuthProvider, 
   AuthError as FirebaseAuthError 
 } from 'firebase/auth'
-import { auth, googleProvider } from '../../../../firebase'
+import { auth, googleProvider } from '@/lib/firebase'
 import { useAuthStore } from '@/stores/authStore'
 
 export const SignInButton = () => {
