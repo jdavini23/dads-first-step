@@ -1,9 +1,9 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import { FirebaseApp, initializeApp } from 'firebase/app'
-import { Auth, getAuth, onAuthStateChanged } from 'firebase/auth'
-import { Firestore, getFirestore } from 'firebase/firestore'
+import { Auth, getAuth, onAuthStateChanged, connectAuthEmulator } from 'firebase/auth'
+import { Firestore, getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 import { useAuthStore } from '@/stores/authStore'
 
 // Firebase configuration
@@ -22,24 +22,46 @@ const app: FirebaseApp = initializeApp(firebaseConfig)
 const auth: Auth = getAuth(app)
 const db: Firestore = getFirestore(app)
 
-export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
-  const { setUser, reset } = useAuthStore()
+// Connect to emulators in development
+if (process.env.NODE_ENV === 'development') {
+  connectAuthEmulator(auth, 'http://localhost:9099')
+  connectFirestoreEmulator(db, 'localhost', 8080)
+}
 
-  // Listen for authentication state changes
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // User is signed in
-      setUser({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-      })
-    } else {
-      // User is signed out
-      reset()
-    }
-  })
+export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
+  const { setUser, reset, setError } = useAuthStore()
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(
+      auth, 
+      (user) => {
+        if (user) {
+          // User is signed in
+          try {
+            setUser({
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName,
+              photoURL: user.photoURL,
+            })
+          } catch (err) {
+            console.error('Error setting user:', err)
+            setError(err instanceof Error ? err.message : 'Failed to set user')
+          }
+        } else {
+          // User is signed out
+          reset()
+        }
+      },
+      (error) => {
+        console.error('Authentication error:', error)
+        setError(error.message)
+      }
+    )
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe()
+  }, [setUser, reset, setError])
 
   return <>{children}</>
 }

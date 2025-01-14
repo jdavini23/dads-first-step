@@ -1,27 +1,36 @@
 import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import { auth } from '../../firebase'
-import type { AuthState, User } from '../types/auth'
+import { persist } from 'zustand/middleware'
+
+export interface User {
+  uid: string
+  email: string | null
+  displayName: string | null
+  photoURL: string | null
+}
+
+export interface AuthState {
+  user: User | null
+  error: string | null
+  setUser: (user: User) => void
+  setError: (error: string | null) => void
+  reset: () => void
+}
 
 const initialState: AuthState = {
   user: null,
-  loading: true,
   error: null,
 }
 
 export const useAuthStore = create<AuthState>()(
-  devtools(
-    persist(
-      (set) => ({
-        ...initialState,
-        setUser: (user: User | null) => set({ user, loading: false }),
-        setError: (error: string | null) => set({ error }),
-        setLoading: (loading: boolean) => set({ loading }),
-        reset: () => set(initialState),
-      }),
-      {
-        name: 'auth-storage',
-      }
-    )
+  persist(
+    (set) => ({
+      ...initialState,
+      setUser: (user: User) => set({ user, error: null }),
+      setError: (error: string | null) => set({ error }),
+      reset: () => set(initialState),
+    }),
+    {
+      name: 'auth-storage',
+    }
   )
 )
