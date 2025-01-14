@@ -1,7 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { signInWithPopup, GoogleAuthProvider, AuthError } from 'firebase/auth'
+import { 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  AuthError as FirebaseAuthError 
+} from 'firebase/auth'
 import { auth } from '../../../firebase'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -26,7 +30,7 @@ export const SignInButton = () => {
     } catch (error) {
       let errorMessage = 'An unknown error occurred'
       
-      if (error instanceof AuthError) {
+      if (error instanceof FirebaseAuthError) {
         switch (error.code) {
           case 'auth/popup-closed-by-user':
             errorMessage = 'Sign-in popup was closed before completing'

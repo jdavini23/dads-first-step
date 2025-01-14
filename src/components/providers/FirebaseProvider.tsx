@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useEffect, useRef } from 'react'
+import { ReactNode, useEffect, useRef, useCallback } from 'react'
 import { FirebaseApp, initializeApp } from 'firebase/app'
 import { Auth, getAuth, onAuthStateChanged, connectAuthEmulator } from 'firebase/auth'
 import { Firestore, getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
@@ -32,6 +32,7 @@ const db: Firestore = getFirestore(app)
 
 // Connect to emulators in development
 if (process.env.NODE_ENV === 'development') {
+  console.warn('Using Firebase Authentication Emulator - DO NOT USE WITH PRODUCTION CREDENTIALS')
   connectAuthEmulator(auth, 'http://localhost:9099')
   connectFirestoreEmulator(db, 'localhost', 8080)
 }
@@ -41,6 +42,23 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
   
   // Use ref to track performance monitoring
   const authStateStartTime = useRef<number | null>(null)
+
+  // Memoize user setting to prevent unnecessary re-renders
+  const handleSetUser = useCallback((user: any) => {
+    try {
+      const startTime = performance.now()
+      setUser({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+      })
+      logPerformance('setUser', startTime)
+    } catch (err) {
+      console.error('Error setting user:', err)
+      setError(err instanceof Error ? err.message : 'Failed to set user')
+    }
+  }, [setUser, setError])
 
   useEffect(() => {
     // Start performance tracking
@@ -57,19 +75,7 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
 
         if (user) {
           // User is signed in
-          try {
-            const startTime = performance.now()
-            setUser({
-              uid: user.uid,
-              email: user.email,
-              displayName: user.displayName,
-              photoURL: user.photoURL,
-            })
-            logPerformance('setUser', startTime)
-          } catch (err) {
-            console.error('Error setting user:', err)
-            setError(err instanceof Error ? err.message : 'Failed to set user')
-          }
+          handleSetUser(user)
         } else {
           // User is signed out
           reset()
@@ -83,7 +89,7 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
 
     // Cleanup subscription on unmount
     return () => unsubscribe()
-  }, [setUser, reset, setError])
+  }, [handleSetUser, reset, setError])
 
   return <>{children}</>
 }
