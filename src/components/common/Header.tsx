@@ -1,4 +1,4 @@
-'use client';
+import React from 'react';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -16,8 +16,8 @@ export const Header = () => {
       await signOut(auth);
       // Clear user from store
       setUser(null);
-    } catch (error) {
-      console.error('Sign out error:', error);
+    } catch {
+      // Silently handle sign-out errors
     }
   };
 
