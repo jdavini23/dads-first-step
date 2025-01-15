@@ -4,23 +4,23 @@
 
 ### 1. Firebase Secrets
 
-- `FIREBASE_TOKEN`: Used for Firebase CLI authentication 1//06SnkUPMQDmQKCgYIARAAGAYSNwF-L9IrCHYWMeYNqO9ypk0lwXGUzcv9JIH-PJHB0HkQTNrptplTnjiQGDDoFyH7Li3nr4DkJ
+- `FIREBASE_TOKEN`: Used for Firebase CLI authentication
   - Generate with: `firebase login:ci`
 - `FIREBASE_PROJECT_ID`: Your Firebase project ID
   dads-first-step
 - `FIREBASE_API_KEY`: Firebase API key from project settings
 
-AIzaSyCMxw5NbYFfTQlaTpBj5CUePhyTYKnMokI
-
 ### 2. Security Scanning Alternatives
 
 ### GitHub Native Security Tools
+
 - **No additional tokens required**
 - Uses GitHub CodeQL and Dependency Review
 - Free for public repositories
 - Comprehensive vulnerability scanning
 
 ### Optional: Slack Webhook
+
 - For notifications on security scan failures
 - Generate from Slack App settings
 - Not mandatory for security scanning
