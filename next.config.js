@@ -16,6 +16,12 @@ const nextConfig = {
     ],
   },
   
+  reactStrictMode: true,
+  swcMinify: true,
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  
   // Webpack configuration for static export
   webpack: (config, { isServer }) => {
     // Ignore Firebase client-side modules during static export
@@ -44,7 +50,12 @@ const nextConfig = {
   
   // Eslint configuration
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
+    dirs: ['src'],
+  },
+  
+  experimental: {
+    typedRoutes: true,
   },
   
   // Client and server config
@@ -68,4 +79,4 @@ console.log('Next.js Config - Environment Variables:', {
   PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
 })
 
-module.exports = nextConfig
+export default nextConfig
