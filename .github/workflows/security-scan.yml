@@ -1,47 +1,80 @@
-name: Security Vulnerability Scan
+name: Security Scanning
 
 on:
+  # Scan weekly
   schedule:
-    # Run weekly on Sunday at midnight
-    - cron: '0 0 * * 0'
-  workflow_dispatch:  # Allow manual trigger
+    - cron: '0 0 * * 0'  # Every Sunday at midnight
+  
+  # Manual trigger
+  workflow_dispatch:
+
+# Permissions needed for CodeQL and security scans
+permissions:
+  actions: read
+  contents: read
+  security-events: write
 
 jobs:
-  security-scan:
+  # GitHub CodeQL Analysis
+  analyze:
+    name: CodeQL Security Analysis
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: test
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    # Initialize CodeQL
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: javascript, typescript
+    
+    # Perform analysis
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+  
+  # Dependency vulnerability check
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    # Use GitHub's built-in dependency review
+    - name: GitHub Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        # Block PRs with high or critical vulnerabilities
+        fail-on-severity: high
+    
+    # NPM audit for additional checks
+    - name: NPM Audit
+      run: |
+        npm audit --audit-level=high
+        npm audit --json > npm-audit-report.json
+    
+    # Upload audit results as artifact
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: npm-audit-report
+        path: npm-audit-report.json
+        retention-days: 5
 
-      - name: NPM Audit
-        run: |
-          npm audit --audit-level=high
-          npm audit signatures
-
-      - name: GitHub Security Scan
-        uses: github/codeql-action/init@v2
-        with:
-          languages: javascript, typescript
-        
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-
-  # Optional: Send notifications
+  # Optional: Slack Notification
   notify:
-    needs: security-scan
-    runs-on: ubuntu-latest
+    name: Slack Notification
+    needs: [analyze, dependency-scan]
     if: failure()
+    runs-on: ubuntu-latest
+    
     steps:
-      - name: Send Slack Notification
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+    - name: Send Slack Notification
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: Security scan detected issues in the repository
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
