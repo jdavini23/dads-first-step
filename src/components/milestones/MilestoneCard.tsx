@@ -1,37 +1,48 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
-import { IconType } from 'react-icons'
-import { format } from 'date-fns'
+import { motion } from 'framer-motion';
+import { IconType } from 'react-icons';
+import { format } from 'date-fns';
+import { UserMilestone } from '@/types/milestone';
+import { FaBaby } from 'react-icons/fa';
 
 interface MilestoneCardProps {
-  title: string
-  description: string
-  icon: IconType
-  expectedAge: string
-  isCompleted?: boolean
-  completedDate?: Date
-  onClick: () => void
+  milestone?: UserMilestone;
+  title?: string;
+  description?: string;
+  icon?: IconType;
+  expectedAge?: string;
+  isCompleted?: boolean;
+  completedDate?: Date;
+  onClick?: () => void;
+  compact?: boolean;
 }
 
 export const MilestoneCard = ({
-  title,
-  description,
-  icon: Icon,
-  expectedAge,
-  isCompleted = false,
-  completedDate,
-  onClick,
+  milestone,
+  title = milestone?.title,
+  description = milestone?.description,
+  icon: Icon = FaBaby,
+  expectedAge = milestone ? `${milestone.minAge} months` : '',
+  isCompleted = milestone?.completed || false,
+  completedDate = milestone?.completedAt ? new Date(milestone.completedAt) : undefined,
+  onClick = () => {},
+  compact = false,
 }: MilestoneCardProps) => {
+  if (!title) return null;
+
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`
         relative overflow-hidden rounded-xl p-6 cursor-pointer
-        ${isCompleted 
-          ? 'bg-gradient-to-br from-green-50 to-emerald-100 border-2 border-emerald-200' 
-          : 'bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200'}
+        ${
+          isCompleted
+            ? 'bg-gradient-to-br from-green-50 to-emerald-100 border-2 border-emerald-200'
+            : 'bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200'
+        }
+        ${compact ? 'p-4 text-sm' : ''}
       `}
       onClick={onClick}
     >
@@ -43,12 +54,7 @@ export const MilestoneCard = ({
             animate={{ scale: 1 }}
             className="bg-emerald-500 text-white p-2 rounded-full"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -61,25 +67,22 @@ export const MilestoneCard = ({
       )}
 
       {/* Icon */}
-      <div className={`
+      <div
+        className={`
         w-12 h-12 rounded-full flex items-center justify-center mb-4
         ${isCompleted ? 'bg-emerald-200 text-emerald-600' : 'bg-blue-200 text-blue-600'}
-      `}>
+      `}
+      >
         <Icon className="w-6 h-6" />
       </div>
 
       {/* Content */}
       <h3 className="text-xl font-bold mb-2">{title}</h3>
       <p className="text-gray-600 mb-4">{description}</p>
-      
+
       {/* Expected Age */}
       <div className="flex items-center text-sm text-gray-500">
-        <svg
-          className="w-4 h-4 mr-1"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -110,5 +113,5 @@ export const MilestoneCard = ({
         </div>
       )}
     </motion.div>
-  )
-}
+  );
+};

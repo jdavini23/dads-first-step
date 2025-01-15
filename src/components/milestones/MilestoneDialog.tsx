@@ -1,17 +1,17 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { format } from 'date-fns'
-import { IconType } from 'react-icons'
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { format } from 'date-fns';
+import { IconType } from 'react-icons';
 
 interface MilestoneDialogProps {
-  isOpen: boolean
-  onClose: () => void
-  onSave: (date: Date, notes: string) => void
-  title: string
-  icon: IconType
-  expectedAge: string
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (date: Date, notes: string) => void;
+  title: string;
+  icon: IconType;
+  expectedAge: string;
 }
 
 export const MilestoneDialog = ({
@@ -22,14 +22,14 @@ export const MilestoneDialog = ({
   icon: Icon,
   expectedAge,
 }: MilestoneDialogProps) => {
-  const [date, setDate] = useState<Date>(new Date())
-  const [notes, setNotes] = useState('')
+  const [date, setDate] = useState<Date>(new Date());
+  const [notes, setNotes] = useState('');
 
   const handleSave = () => {
-    onSave(date, notes)
-    setNotes('')
-    onClose()
-  }
+    onSave(date, notes);
+    setNotes('');
+    onClose();
+  };
 
   return (
     <AnimatePresence>
@@ -110,5 +110,5 @@ export const MilestoneDialog = ({
         </>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};

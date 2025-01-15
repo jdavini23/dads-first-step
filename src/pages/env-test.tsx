@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 export default function EnvTestPage() {
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-    
+    setMounted(true);
+
     // Log environment variables on mount
     console.log('Environment Variables Test Page:', {
       NODE_ENV: process.env.NODE_ENV,
       NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
       NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
       NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    })
-  }, [])
+    });
+  }, []);
 
   if (!mounted) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
@@ -30,14 +30,16 @@ export default function EnvTestPage() {
               <strong>API Key:</strong> {process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'Not set'}
             </div>
             <div>
-              <strong>Auth Domain:</strong> {process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'Not set'}
+              <strong>Auth Domain:</strong>{' '}
+              {process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'Not set'}
             </div>
             <div>
-              <strong>Project ID:</strong> {process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'Not set'}
+              <strong>Project ID:</strong>{' '}
+              {process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'Not set'}
             </div>
           </div>
         </div>
-        
+
         <div>
           <h2 className="text-lg font-semibold mb-2">Environment:</h2>
           <div className="bg-gray-100 p-4 rounded space-y-2">
@@ -48,5 +50,5 @@ export default function EnvTestPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -2,13 +2,13 @@ export enum MilestoneCategory {
   PHYSICAL = 'physical',
   COGNITIVE = 'cognitive',
   SOCIAL = 'social',
-  EMOTIONAL = 'emotional'
+  EMOTIONAL = 'emotional',
 }
 
 export enum MilestoneDifficulty {
-  EASY = 'easy',
-  MODERATE = 'moderate',
-  CHALLENGING = 'challenging'
+  EASY = 'Easy',
+  MEDIUM = 'Medium',
+  HARD = 'Hard',
 }
 
 export interface Milestone {
@@ -26,9 +26,11 @@ export interface Milestone {
 export interface UserMilestone extends Milestone {
   userId: string;
   completed: boolean;
-  completedAt?: Date;
+  completedAt?: Date | null;
   notes?: string;
   progress: number; // 0-100
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MilestoneTrackerState {

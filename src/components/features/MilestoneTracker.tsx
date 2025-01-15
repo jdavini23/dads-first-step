@@ -1,89 +1,120 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useMilestoneStore } from '@/stores/milestoneStore'
-import { useAuthStore } from '@/stores/authStore'
-import { getMilestoneTemplates, addUserMilestone } from '@/services/milestoneService'
-import { MilestoneCard } from '@/components/milestones/MilestoneCard'
-import { UserMilestone } from '@/types/milestone'
-import { toast } from 'sonner'
+import { useState, useEffect } from 'react';
+import { useAuthStore } from '@/stores/authStore';
+import { useMilestoneStore } from '@/stores/milestoneStore';
+import { getMilestonesForUser } from '@/services/milestoneService';
+import { MilestoneCategory } from '@/types/milestone';
+import { defaultMilestones } from '@/utils/milestoneTemplates';
 
 export const MilestoneTracker = () => {
-  const { user } = useAuthStore()
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const { milestones, addMilestone } = useMilestoneStore()
+  const user = useAuthStore((state) => state.user);
+  const { milestones, setMilestones } = useMilestoneStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<MilestoneCategory | 'ALL'>('ALL');
 
-  const handleAddDefaultMilestones = async () => {
-    if (!user) {
-      toast.error('Please sign in to add milestones')
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      const templates = await getMilestoneTemplates()
-      
-      for (const template of templates) {
-        const newMilestone: UserMilestone = {
-          ...template,
-          userId: user.uid,
-          id: '' // Will be set by Firestore
-        }
-
-        const milestoneId = await addUserMilestone(newMilestone)
-        
-        addMilestone({
-          ...newMilestone,
-          id: milestoneId
-        })
+  useEffect(() => {
+    const fetchMilestones = async () => {
+      if (!user) return;
+      setIsLoading(true);
+      try {
+        const data = await getMilestonesForUser(user.uid);
+        setMilestones(data);
+      } catch (error) {
+        console.error('Error fetching milestones:', error);
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      toast.success('Default milestones added successfully!')
-    } catch (error) {
-      console.error('Failed to add milestones:', error)
-      toast.error('Failed to add milestones. Please try again.')
-    } finally {
-      setIsLoading(false)
+    if (user) {
+      fetchMilestones();
     }
+  }, [user, setMilestones]);
+
+  if (!user) {
+    return <div>Please sign in to view milestones</div>;
   }
 
+  if (isLoading) {
+    return <div>Loading milestones...</div>;
+  }
+
+  // Create a map of existing user milestones by template title
+  const userMilestoneMap = new Map(milestones.map((milestone) => [milestone.title, milestone]));
+
+  // Filter templates by category if selected
+  const filteredTemplates = defaultMilestones.filter(
+    (template) => selectedCategory === 'ALL' || template.category === selectedCategory
+  );
+
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <div className="space-x-2">
-          {/* Category selection buttons can be added here */}
-        </div>
+    <div className="space-y-6">
+      <div className="flex gap-2 overflow-x-auto pb-4">
         <button
-          onClick={handleAddDefaultMilestones}
-          disabled={isLoading || !user}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+          onClick={() => setSelectedCategory('ALL')}
+          className={`px-4 py-2 rounded-full text-sm ${
+            selectedCategory === 'ALL' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'
+          }`}
         >
-          {isLoading ? 'Adding...' : 'Add Default Milestones'}
+          All
         </button>
+        {Object.values(MilestoneCategory).map((category) => (
+          <button
+            key={category}
+            onClick={() => setSelectedCategory(category)}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
+              selectedCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'
+            }`}
+          >
+            {category}
+          </button>
+        ))}
       </div>
 
-      <div className="space-y-4">
-        {milestones.length > 0 ? (
-          milestones.map((milestone) => (
-            <MilestoneCard 
-              key={milestone.id}
-              title={milestone.title}
-              description={milestone.description}
-              icon={() => null} // Replace with actual icon logic
-              expectedAge={`${milestone.minAge}-${milestone.maxAge} months`}
-              isCompleted={milestone.completed}
-              onClick={() => {
-                // Add milestone interaction logic
-              }}
-            />
-          ))
-        ) : (
-          <p className="text-center text-gray-500">
-            No milestones yet. Add some to get started!
-          </p>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredTemplates.map((template) => {
+          const userMilestone = userMilestoneMap.get(template.title);
+          const TemplateIcon = template.icon;
+
+          return (
+            <div
+              key={template.id}
+              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <TemplateIcon className="w-6 h-6 text-blue-500" />
+                <h3 className="text-xl font-semibold">{template.title}</h3>
+              </div>
+              <p className="text-gray-600 mb-4">{template.description}</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {template.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">
+                  {template.minAge}-{template.maxAge} months
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${
+                    userMilestone?.completed
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}
+                >
+                  {userMilestone?.completed ? 'Completed' : 'In Progress'}
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
-  )
-}
+  );
+};

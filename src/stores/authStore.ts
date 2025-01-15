@@ -1,58 +1,54 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { User } from 'firebase/auth';
 
-type User = {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-};
-
-type AuthState = {
+export interface AuthState {
   user: User | null;
-  setUser: (user: User) => void;
-  clearUser: () => void;
-};
+  loading: boolean;
+  error: Error | null;
+  isAuthenticated: boolean;
+  accessToken: string | null;
+  initialized: boolean;
+  setUser: (user: User | null) => void;
+}
 
-export const useAuthStore = create<AuthState>()(
+const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      setUser: (user) => set({ user }),
-      clearUser: () => set({ user: null }),
+      loading: true,
+      error: null,
+      isAuthenticated: false,
+      accessToken: null,
+      initialized: false,
+      setUser: (user: User | null) => {
+        if (user) {
+          set({
+            user,
+            isAuthenticated: true,
+            loading: false,
+            error: null,
+            initialized: true,
+          });
+        } else {
+          set({
+            user: null,
+            isAuthenticated: false,
+            loading: false,
+            error: null,
+            initialized: true,
+          });
+        }
+      },
     }),
     {
       name: 'auth-storage',
-      version: 1,
-      migrate: (persistedState: any, version: number) => {
-        try {
-          // Migration strategy to handle different versions of persisted state
-          if (!persistedState || version === 0) {
-            // If no version or old version, reset to initial state
-            return { user: null };
-          }
-          
-          // Validate persisted state structure
-          if (persistedState.user) {
-            const { uid, email, displayName, photoURL } = persistedState.user;
-            if (uid && typeof uid === 'string') {
-              return persistedState;
-            }
-          }
-          
-          // If validation fails, reset
-          return { user: null };
-        } catch (error) {
-          console.error('Migration error:', error);
-          return { user: null };
-        }
-      },
-      onRehydrateStorage: () => (state) => {
-        if (!state || !state.user) {
-          state?.clearUser();
-        }
-      },
-      storage: localStorage,
+      partialize: (state) => ({
+        accessToken: state.accessToken,
+        initialized: state.initialized,
+      }),
     }
   )
 );
+
+export { useAuthStore };

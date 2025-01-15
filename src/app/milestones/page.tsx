@@ -1,175 +1,87 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/stores/authStore'
-import { MilestoneCard } from '@/components/milestones/MilestoneCard'
-import { MilestoneDialog } from '@/components/milestones/MilestoneDialog'
-import { motion } from 'framer-motion'
-import {
-  FaBabyCarriage,
-  FaSmile,
-  FaWalking,
-  FaBirthdayCake,
-  FaBook,
-  FaComments,
-} from 'react-icons/fa'
-
-// Define milestone data
-const MILESTONES = [
-  {
-    id: 'first-smile',
-    title: 'First Smile',
-    description: 'That magical moment when your baby first smiles at you',
-    icon: FaSmile,
-    expectedAge: '6-8 weeks',
-  },
-  {
-    id: 'first-word',
-    title: 'First Word',
-    description: 'The exciting moment when your baby says their first word',
-    icon: FaComments,
-    expectedAge: '9-14 months',
-  },
-  {
-    id: 'first-steps',
-    title: 'First Steps',
-    description: 'Watch your little one take their first independent steps',
-    icon: FaWalking,
-    expectedAge: '9-15 months',
-  },
-  {
-    id: 'first-book',
-    title: 'First Book',
-    description: 'Share the joy of reading with your baby',
-    icon: FaBook,
-    expectedAge: '6-12 months',
-  },
-  {
-    id: 'first-food',
-    title: 'First Solid Food',
-    description: 'Introduce your baby to the world of solid foods',
-    icon: FaBirthdayCake,
-    expectedAge: '4-6 months',
-  },
-  {
-    id: 'first-crawl',
-    title: 'First Crawl',
-    description: 'Your baby&apos;s first adventure in mobility',
-    icon: FaBabyCarriage,
-    expectedAge: '6-10 months',
-  },
-]
+import { useState } from 'react';
+import { MilestoneTracker } from '@/components/features/MilestoneTracker';
+import { defaultMilestones, convertTemplateToMilestone } from '@/utils/milestoneTemplates';
+import { useAuthStore } from '@/stores/authStore';
+import { useMilestoneStore } from '@/stores/milestoneStore';
+import { addUserMilestone } from '@/services/milestoneService';
+import { Button } from '@/components/ui/Button';
+import { toast } from 'sonner';
 
 export default function MilestonesPage() {
-  const user = useAuthStore((state) => state.user)
-  const router = useRouter()
-  const [selectedMilestone, setSelectedMilestone] = useState<typeof MILESTONES[0] | null>(null)
-  const [completedMilestones, setCompletedMilestones] = useState<Record<string, { date: Date; notes: string }>>({})
-  const [isLoading, setIsLoading] = useState(true)
-  const [isInitialized, setIsInitialized] = useState(false)
+  const { user } = useAuthStore();
+  const { addMilestone } = useMilestoneStore();
+  const [selectedTemplate, setSelectedTemplate] = useState<number | null>(null);
 
-  // Protect the route using useEffect
-  useEffect(() => {
-    if (!isInitialized) {
-      setIsInitialized(true)
-      return
+  const handleAddMilestone = async (templateIndex: number) => {
+    if (!user) {
+      toast.error('Please sign in to add milestones');
+      return;
     }
 
-    const checkAuth = async () => {
-      if (!user) {
-        await router.push('/')
-      } else {
-        setIsLoading(false)
-      }
+    const template = defaultMilestones[templateIndex];
+    const newMilestone = convertTemplateToMilestone(template, user.uid);
+
+    try {
+      // Add to Firestore
+      const firestoreMilestone = await addUserMilestone(newMilestone);
+
+      // Update local store
+      addMilestone(firestoreMilestone);
+
+      toast.success(`Added milestone: ${newMilestone.title}`);
+      setSelectedTemplate(null);
+    } catch (error) {
+      toast.error('Failed to add milestone');
+      console.error(error);
     }
-
-    checkAuth()
-  }, [user, router, isInitialized])
-
-  // Show loading state or nothing while checking authentication
-  if (isLoading || !user) {
-    return null
-  }
-
-  const handleMilestoneClick = (milestone: typeof MILESTONES[0]) => {
-    setSelectedMilestone(milestone)
-  }
-
-  const handleSaveMilestone = (date: Date, notes: string) => {
-    if (selectedMilestone) {
-      setCompletedMilestones((prev) => ({
-        ...prev,
-        [selectedMilestone.id]: { date, notes },
-      }))
-    }
-  }
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const item = {
-    hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1 },
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
-            Welcome, {user.displayName}!
-          </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Track and celebrate your baby&apos;s precious moments. Each milestone is a special step in their journey of growth.
-          </p>
-        </motion.div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Your Baby&apos;s Milestones</h1>
+      <p className="text-lg text-gray-600 mb-8">
+        Track your child&apos;s growth and celebrate their achievements together.
+      </p>
 
-        {/* Milestone Grid */}
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {MILESTONES.map((milestone) => (
-            <motion.div key={milestone.id} variants={item}>
-              <MilestoneCard
-                {...milestone}
-                isCompleted={milestone.id in completedMilestones}
-                completedDate={
-                  milestone.id in completedMilestones
-                    ? completedMilestones[milestone.id].date
-                    : undefined
-                }
-                onClick={() => handleMilestoneClick(milestone)}
-              />
-            </motion.div>
-          ))}
-        </motion.div>
+      {/* Existing Milestone Tracker */}
+      <MilestoneTracker />
 
-        {/* Milestone Dialog */}
-        <MilestoneDialog
-          isOpen={selectedMilestone !== null}
-          onClose={() => setSelectedMilestone(null)}
-          onSave={handleSaveMilestone}
-          title={selectedMilestone?.title ?? ''}
-          icon={selectedMilestone?.icon ?? FaBabyCarriage}
-          expectedAge={selectedMilestone?.expectedAge ?? ''}
-        />
+      {/* Milestone Templates Section */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-semibold mb-6">Milestone Templates</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {defaultMilestones.map((template, index) => {
+            const TemplateIcon = template.icon;
+            return (
+              <div
+                key={template.title}
+                className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow"
+              >
+                <div className="flex items-center mb-4">
+                  <div className="text-4xl text-blue-500 mr-4">
+                    <TemplateIcon />
+                  </div>
+                  <h3 className="text-xl font-bold">{template.title}</h3>
+                </div>
+                <p className="text-gray-600 mb-4">{template.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-500">
+                    {template.minAge}-{template.maxAge} months
+                  </span>
+                  <Button
+                    onClick={() => handleAddMilestone(index)}
+                    variant={selectedTemplate === index ? 'default' : 'outline'}
+                  >
+                    {selectedTemplate === index ? 'Adding...' : 'Add Milestone'}
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
-  )
+  );
 }

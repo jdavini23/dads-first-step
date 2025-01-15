@@ -1,35 +1,35 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error('Application error:', error)
-  }, [error])
+    console.error('Application error:', error);
+  }, [error]);
 
   const handleRetry = () => {
     // First try to reset the error boundary
     try {
-      reset()
+      reset();
     } catch {
       // If reset fails, try to reload the page
-      window.location.reload()
+      window.location.reload();
     }
-  }
+  };
 
   const handleGoHome = () => {
-    router.push('/')
-  }
+    router.push('/');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
@@ -48,7 +48,7 @@ export default function Error({
           >
             Try again
           </button>
-          
+
           <button
             onClick={handleGoHome}
             className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -63,13 +63,11 @@ export default function Error({
               <summary className="text-sm font-medium text-gray-900 cursor-pointer">
                 Error details
               </summary>
-              <pre className="mt-2 text-xs text-gray-600 overflow-auto">
-                {error.stack}
-              </pre>
+              <pre className="mt-2 text-xs text-gray-600 overflow-auto">{error.stack}</pre>
             </details>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -1,40 +1,24 @@
-'use client'
+'use client';
 
-import { ReactNode, useEffect } from 'react'
-import { onAuthStateChanged } from 'firebase/auth'
-import { firebaseService } from '@/lib/firebaseApp'
-import { useAuthStore } from '@/stores/authStore'
+import { useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/config/firebase';
+import { useAuthStore } from '@/stores/authStore';
 
-type FirebaseProviderProps = {
-  children: ReactNode
+interface FirebaseProviderProps {
+  children: React.ReactNode;
 }
 
 export function FirebaseProvider({ children }: FirebaseProviderProps) {
-  const { setUser, clearUser } = useAuthStore()
+  const setUser = useAuthStore((state) => state.setUser);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      firebaseService.auth,
-      (user) => {
-        if (user) {
-          setUser({
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            photoURL: user.photoURL
-          })
-        } else {
-          clearUser()
-        }
-      },
-      (error) => {
-        console.error('Auth state change error:', error)
-        clearUser()
-      }
-    )
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
 
-    return () => unsubscribe()
-  }, [setUser, clearUser])
+    return () => unsubscribe();
+  }, [setUser]);
 
-  return <>{children}</>
+  return <>{children}</>;
 }

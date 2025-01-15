@@ -7,13 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "eslint .",
+    "lint:fix": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,md,json}\"",
     "prepare": "husky install",
     "clean": "rimraf .next",
-    "reset": "npm run clean && npm cache clean --force && npm install"
+    "reset": "npm run clean && npm cache clean --force && npm install",
+    "export": "next export"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "firebase": "latest",
     "framer-motion": "^11.18.0",
@@ -24,6 +26,7 @@
     "react-error-boundary": "^5.0.0",
     "react-icons": "^5.4.0",
     "sonner": "^1.7.1",
+    "tailwind-merge": "^2.6.0",
     "zustand": "latest"
   },
   "devDependencies": {
@@ -31,10 +34,12 @@
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "eslint": "latest",
+    "eslint-config-next": "latest",
     "eslint-config-prettier": "latest",
     "eslint-plugin-jsx-a11y": "latest",
     "eslint-plugin-react": "latest",
     "eslint-plugin-react-hooks": "latest",
+    "firebase-tools": "^13.29.1",
     "husky": "latest",
     "lint-staged": "latest",
     "prettier": "latest",
