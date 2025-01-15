@@ -40,6 +40,11 @@ export interface MilestoneTrackerState {
     minProgress?: number;
     completed?: boolean;
   };
+  fetchMilestones: (userId: string) => Promise<void>;
+  updateMilestone: (milestoneId: string, updates: Partial<UserMilestone>) => Promise<void>;
+  getFilteredMilestones: () => UserMilestone[];
+  setFilters: (filters: MilestoneTrackerState['filters']) => void;
+  reset: () => void;
 }
 
 export interface MilestoneService {

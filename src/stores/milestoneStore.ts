@@ -1,80 +1,69 @@
-import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import { 
-  MilestoneTrackerState, 
-  UserMilestone, 
-  MilestoneCategory 
-} from '@/types/milestone'
-import { getMilestonesForUser, updateUserMilestone } from '@/services/milestoneService'
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-const initialState: MilestoneTrackerState = {
-  milestones: [],
-  loading: false,
-  error: null,
-  filters: {}
-}
+type Milestone = {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+};
 
-export const useMilestoneStore = create<MilestoneTrackerState>()(
-  devtools(
-    persist(
-      (set, get) => ({
-        ...initialState,
-        
-        fetchMilestones: async (userId: string) => {
-          set({ loading: true, error: null })
-          try {
-            const milestones = await getMilestonesForUser(userId)
-            set({ milestones, loading: false })
-          } catch (error) {
-            set({ 
-              error: error instanceof Error ? error.message : 'Failed to fetch milestones', 
-              loading: false 
-            })
+type MilestoneState = {
+  milestones: Milestone[];
+  addMilestone: (milestone: Milestone) => void;
+  removeMilestone: (id: string) => void;
+  updateMilestone: (id: string, updates: Partial<Milestone>) => void;
+};
+
+export const useMilestoneStore = create<MilestoneState>()(
+  persist(
+    (set) => ({
+      milestones: [],
+      addMilestone: (milestone) => 
+        set((state) => ({ milestones: [...state.milestones, milestone] })),
+      removeMilestone: (id) => 
+        set((state) => ({ 
+          milestones: state.milestones.filter(m => m.id !== id) 
+        })),
+      updateMilestone: (id, updates) => 
+        set((state) => ({
+          milestones: state.milestones.map(m => 
+            m.id === id ? { ...m, ...updates } : m
+          )
+        })),
+    }),
+    {
+      name: 'milestone-storage',
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        try {
+          // Migration strategy to handle different versions of persisted state
+          if (!persistedState || version === 0) {
+            // If no version or old version, reset to initial state
+            return { milestones: [] };
           }
-        },
-
-        updateMilestone: async (milestoneId: string, updates: Partial<UserMilestone>) => {
-          try {
-            await updateUserMilestone(milestoneId, updates)
-            
-            // Optimistically update local state
-            set(state => ({
-              milestones: state.milestones.map(milestone => 
-                milestone.id === milestoneId 
-                  ? { ...milestone, ...updates } 
-                  : milestone
-              )
-            }))
-          } catch (error) {
-            set({ 
-              error: error instanceof Error ? error.message : 'Failed to update milestone' 
-            })
+          
+          // Validate persisted state structure
+          if (Array.isArray(persistedState.milestones)) {
+            const validMilestones = persistedState.milestones.filter((m: any) => 
+              m && typeof m.id === 'string' && typeof m.title === 'string'
+            );
+            return { milestones: validMilestones };
           }
-        },
-
-        setFilters: (filters) => {
-          set({ filters })
-        },
-
-        getFilteredMilestones: () => {
-          const { milestones, filters } = get()
-          return milestones.filter(milestone => {
-            if (filters.category && milestone.category !== filters.category) return false
-            if (filters.minProgress !== undefined && milestone.progress < filters.minProgress) return false
-            if (filters.completed !== undefined && milestone.completed !== filters.completed) return false
-            return true
-          })
-        },
-
-        reset: () => set(initialState)
-      }),
-      {
-        name: 'milestone-storage',
-        partialize: (state) => ({
-          milestones: state.milestones,
-          filters: state.filters
-        })
-      }
-    )
+          
+          // If validation fails, reset
+          return { milestones: [] };
+        } catch (error) {
+          console.error('Migration error:', error);
+          return { milestones: [] };
+        }
+      },
+      onRehydrateStorage: () => (state) => {
+        if (!state || !Array.isArray(state.milestones)) {
+          state = { ...state, milestones: [] };
+        }
+      },
+      getStorage: () => localStorage,
+    }
   )
-)
+);
