@@ -3,29 +3,52 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "eslint .",
+    "format": "prettier --write \"src/**/*.{ts,tsx,md,json}\"",
+    "prepare": "husky install",
+    "clean": "rimraf .next",
+    "reset": "npm run clean && npm cache clean --force && npm install"
   },
   "dependencies": {
-    "@firebase/auth": "^1.8.1",
-    "@firebase/firestore": "^4.7.5",
-    "firebase": "^11.1.0",
-    "next": "15.1.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "zustand": "^5.0.3"
+    "date-fns": "^4.1.0",
+    "firebase": "latest",
+    "framer-motion": "^11.18.0",
+    "next": "latest",
+    "next-themes": "^0.4.4",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-error-boundary": "^5.0.0",
+    "react-icons": "^5.4.0",
+    "sonner": "^1.7.1",
+    "zustand": "latest"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.1.4",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "@types/react": "latest",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "eslint": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-plugin-jsx-a11y": "latest",
+    "eslint-plugin-react": "latest",
+    "eslint-plugin-react-hooks": "latest",
+    "husky": "latest",
+    "lint-staged": "latest",
+    "prettier": "latest",
+    "tailwindcss": "latest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }

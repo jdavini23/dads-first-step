@@ -1,28 +1,62 @@
-import { SignInButton } from '../auth/SignInButton'
+'use client'
+
+import Link from 'next/link'
+import Image from 'next/image'
+import { SignInButton } from '@/components/auth/SignInButton'
 import { useAuthStore } from '@/stores/authStore'
+import { firebaseService } from '@/lib/firebaseApp'
 
 export const Header = () => {
-  const user = useAuthStore((state) => state.user)
+  const { user } = useAuthStore()
+
+  const handleSignOut = async () => {
+    try {
+      const { auth } = firebaseService
+      await auth.signOut()
+      
+      // Clear user from store
+      useAuthStore.getState().clearUser()
+    } catch (error) {
+      console.error('Sign out error:', error)
+    }
+  }
 
   return (
-    <header className="w-full py-4 px-6 bg-white shadow-md">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dad&apos;s First Step</h1>
-        <nav>
-          {user ? (
-            <div className="flex items-center gap-4">
-              <span>Welcome, {user.displayName}</span>
-              <button
-                onClick={() => auth.signOut()}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Sign Out
-              </button>
-            </div>
-          ) : (
-            <SignInButton />
-          )}
-        </nav>
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 max-w-screen-2xl items-center">
+        <div className="mr-4 flex">
+          <Link href="/" className="mr-6 flex items-center space-x-2">
+            <span className="hidden font-bold sm:inline-block">
+              Dad&apos;s First Step
+            </span>
+          </Link>
+        </div>
+        
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <nav className="flex items-center">
+            {user ? (
+              <div className="flex items-center space-x-4">
+                {user.photoURL && (
+                  <Image 
+                    src={user.photoURL} 
+                    alt="Profile" 
+                    width={32} 
+                    height={32} 
+                    className="rounded-full"
+                  />
+                )}
+                <button 
+                  onClick={handleSignOut}
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 h-9 px-4 py-2"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <SignInButton />
+            )}
+          </nav>
+        </div>
       </div>
     </header>
   )
