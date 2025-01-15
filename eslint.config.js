@@ -1,20 +1,32 @@
 // @ts-check
-const eslint = require("eslint");
-const tseslint = require("@typescript-eslint/eslint-plugin");
-const nextPlugin = require("eslint-config-next");
+import eslint from 'eslint';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import nextPlugin from 'eslint-config-next';
+import reactHooks from 'eslint-plugin-react-hooks';
+import react from 'eslint-plugin-react';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 
-module.exports = [
+export default [
   {
     files: ['**/*.ts', '**/*.tsx'],
-    extends: [
-      'plugin:@typescript-eslint/recommended',
-      'next/core-web-vitals'
-    ],
-    plugins: ['@typescript-eslint'],
+    plugins: {
+      '@typescript-eslint': tseslint,
+      'react-hooks': reactHooks,
+      'react': react,
+      'jsx-a11y': jsxA11y
+    },
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './tsconfig.json'
+      }
+    },
     rules: {
       '@typescript-eslint/no-unused-vars': 'warn',
       'react/no-unescaped-entities': 'warn',
-      'no-console': 'warn'
+      'no-console': 'warn',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn'
     }
   },
   {
@@ -23,7 +35,9 @@ module.exports = [
       'node_modules/',
       'dist/',
       'build/',
-      'coverage/'
+      'coverage/',
+      '**/*.config.js',
+      '**/*.config.ts'
     ]
   }
 ];
