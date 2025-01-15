@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # Enable version updates for npm
+  # NPM Dependency Updates
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -9,40 +9,47 @@ updates:
       time: "08:00"
       timezone: "America/Los_Angeles"
     
-    # Add pull request labels
-    labels:
-      - "dependencies"
-      - "npm"
-    
-    # Specify which types of updates to perform
+    # Comprehensive update strategy
     groups:
-      # Group minor and patch updates together
-      dependencies:
+      # Group non-breaking updates
+      core-dependencies:
         patterns:
-          - "*"
+          - "react"
+          - "next"
+          - "typescript"
         update-types: 
           - "minor"
           - "patch"
       
       # Separate major version updates
-      major-dependencies:
+      major-updates:
         patterns:
           - "*"
         update-types:
           - "major"
     
-    # Limit the number of open pull requests
-    open-pull-requests-limit: 10
+    # Labels for different types of updates
+    labels:
+      - "dependencies"
+      - "npm"
     
-    # Ignore specific dependencies or versions
+    # Limit open PRs and specify reviewers
+    open-pull-requests-limit: 10
+    reviewers:
+      - "jdavini23"  # Replace with your GitHub username
+    
+    # Ignore specific packages or versions
     ignore:
-      # Example of ignoring specific packages
       - dependency-name: "next"
         versions: ["15.x"]
       - dependency-name: "react"
         versions: ["19.x"]
+      
+      # Ignore packages that might break compatibility
+      - dependency-name: "@types/react"
+      - dependency-name: "@types/node"
   
-  # GitHub Actions dependencies
+  # GitHub Actions Dependencies
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -54,7 +61,13 @@ updates:
     
     open-pull-requests-limit: 5
 
-# Security settings
+# Security update settings
 security-updates:
   # Automatically create PRs for security updates
   open-pull-requests-limit: 10
+
+# Commit message preferences
+commit-message:
+  prefix: "chore"
+  prefix-development: "chore"
+  include: "scope"
