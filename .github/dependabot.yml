@@ -1,0 +1,60 @@
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "America/Los_Angeles"
+    
+    # Add pull request labels
+    labels:
+      - "dependencies"
+      - "npm"
+    
+    # Specify which types of updates to perform
+    groups:
+      # Group minor and patch updates together
+      dependencies:
+        patterns:
+          - "*"
+        update-types: 
+          - "minor"
+          - "patch"
+      
+      # Separate major version updates
+      major-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+    
+    # Limit the number of open pull requests
+    open-pull-requests-limit: 10
+    
+    # Ignore specific dependencies or versions
+    ignore:
+      # Example of ignoring specific packages
+      - dependency-name: "next"
+        versions: ["15.x"]
+      - dependency-name: "react"
+        versions: ["19.x"]
+  
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    
+    labels:
+      - "dependencies"
+      - "github-actions"
+    
+    open-pull-requests-limit: 5
+
+# Security settings
+security-updates:
+  # Automatically create PRs for security updates
+  open-pull-requests-limit: 10
