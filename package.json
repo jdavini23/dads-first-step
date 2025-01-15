@@ -17,38 +17,38 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "date-fns": "^4.1.0",
-    "firebase": "latest",
-    "framer-motion": "^11.18.0",
-    "next": "latest",
-    "next-themes": "^0.4.4",
-    "react": "latest",
-    "react-dom": "latest",
-    "react-error-boundary": "^5.0.0",
-    "react-icons": "^5.4.0",
-    "sonner": "^1.7.1",
-    "tailwind-merge": "^2.6.0",
-    "zustand": "latest"
+    "date-fns": "^3.3.1",
+    "firebase": "^10.7.1",
+    "framer-motion": "^10.16.16",
+    "next": "^14.1.0",
+    "next-themes": "^0.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-error-boundary": "^4.0.11",
+    "react-icons": "^4.12.0",
+    "sonner": "^1.2.4",
+    "tailwind-merge": "^2.2.1",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
-    "@eslint/js": "^9.18.0",
-    "@types/react": "latest",
-    "@typescript-eslint/eslint-plugin": "^8.20.0",
-    "@typescript-eslint/parser": "^8.20.0",
-    "eslint": "^9.18.0",
-    "eslint-config-next": "^15.1.4",
-    "eslint-config-prettier": "latest",
-    "eslint-plugin-jsx-a11y": "latest",
-    "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-refresh": "^0.4.18",
-    "firebase-tools": "^13.29.1",
-    "globals": "^15.6.0",
-    "husky": "latest",
-    "lint-staged": "latest",
-    "prettier": "latest",
-    "tailwindcss": "latest",
-    "typescript": "^5.7.3",
+    "@eslint/js": "^8.57.0",
+    "@types/react": "^18.2.48",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.1.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "firebase-tools": "^13.1.1",
+    "globals": "^14.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.4",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3",
     "typescript-eslint": "^8.20.0"
   },
   "husky": {
@@ -61,5 +61,12 @@
       "eslint --fix",
       "prettier --write"
     ]
+  },
+  "overrides": {
+    "eslint": "^8.56.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
