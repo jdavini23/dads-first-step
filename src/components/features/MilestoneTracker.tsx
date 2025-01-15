@@ -1,4 +1,4 @@
-'use client';
+import React from 'react';
 
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
@@ -20,8 +20,6 @@ export const MilestoneTracker = () => {
       try {
         const data = await getMilestonesForUser(user.uid);
         setMilestones(data);
-      } catch (error) {
-        console.error('Error fetching milestones:', error);
       } finally {
         setIsLoading(false);
       }

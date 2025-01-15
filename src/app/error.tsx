@@ -1,4 +1,4 @@
-'use client';
+import React from 'react';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -14,7 +14,7 @@ export default function Error({
 
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error('Application error:', error);
+    
   }, [error]);
 
   const handleRetry = () => {

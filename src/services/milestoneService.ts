@@ -22,83 +22,62 @@ const { db } = firebaseService;
 export const MILESTONES_COLLECTION = 'milestones';
 
 export const getMilestonesForUser = async (userId: string): Promise<UserMilestone[]> => {
-  try {
-    const milestoneRef = collection(db, MILESTONES_COLLECTION);
-    const q = query(milestoneRef, where('userId', '==', userId));
+  const milestoneRef = collection(db, MILESTONES_COLLECTION);
+  const q = query(milestoneRef, where('userId', '==', userId));
 
-    const querySnapshot = await getDocs(q);
+  const querySnapshot = await getDocs(q);
 
-    if (querySnapshot.empty) {
-      console.log('No milestones found for user');
-      return [];
-    }
-
-    const milestones = querySnapshot.docs.map(
-      (doc) =>
-        ({
-          id: doc.id,
-          ...doc.data(),
-        }) as UserMilestone
-    );
-
-    return milestones;
-  } catch (error) {
-    console.error('Error fetching milestones:', error);
-    throw error;
+  if (querySnapshot.empty) {
+    return [];
   }
+
+  const milestones = querySnapshot.docs.map(
+    (doc) =>
+      ({
+        id: doc.id,
+        ...doc.data(),
+      }) as UserMilestone
+  );
+
+  return milestones;
 };
 
 export const addUserMilestone = async (milestone: Milestone): Promise<UserMilestone> => {
-  try {
-    const milestoneRef = collection(db, MILESTONES_COLLECTION);
+  const milestoneRef = collection(db, MILESTONES_COLLECTION);
 
-    const userMilestone: Omit<UserMilestone, 'id'> = {
-      ...milestone,
-      userId: firebaseService.auth.currentUser?.uid || '', // Ensure userId is set
-      completed: false,
-      progress: 0,
-      completedAt: null, // Change undefined to null
-      notes: '',
-      createdAt: '',
-      updatedAt: ''
-    };
+  const userMilestone: Omit<UserMilestone, 'id'> = {
+    ...milestone,
+    userId: firebaseService.auth.currentUser?.uid || '', // Ensure userId is set
+    completed: false,
+    progress: 0,
+    completedAt: null, // Change undefined to null
+    notes: '',
+    createdAt: '',
+    updatedAt: ''
+  };
 
-    const docRef = await addDoc(milestoneRef, userMilestone);
+  const docRef = await addDoc(milestoneRef, userMilestone);
 
-    return {
-      ...userMilestone,
-      id: docRef.id,
-    };
-  } catch (error) {
-    console.error('Error adding milestone:', error);
-    throw error;
-  }
+  return {
+    ...userMilestone,
+    id: docRef.id,
+  };
 };
 
 export const updateUserMilestone = async (
   milestoneId: string,
   updates: Partial<UserMilestone>
 ): Promise<void> => {
-  try {
-    const milestoneRef = doc(db, MILESTONES_COLLECTION, milestoneId);
-    await updateDoc(milestoneRef, {
-      ...updates,
-      updatedAt: serverTimestamp(),
-    });
-  } catch (error) {
-    console.error('Error updating milestone:', error);
-    throw error;
-  }
+  const milestoneRef = doc(db, MILESTONES_COLLECTION, milestoneId);
+  await updateDoc(milestoneRef, {
+    ...updates,
+    updatedAt: serverTimestamp(),
+  });
 };
 
 export const deleteUserMilestone = async (milestoneId: string): Promise<void> => {
-  try {
-    const milestoneRef = doc(db, MILESTONES_COLLECTION, milestoneId);
-    await deleteDoc(milestoneRef);
-  } catch (error) {
-    console.error('Error deleting milestone:', error);
-    throw error;
-  }
+  const milestoneRef = doc(db, MILESTONES_COLLECTION, milestoneId);
+  await deleteDoc(milestoneRef);
 };
 
 // Predefined milestone templates
@@ -182,68 +161,31 @@ export const addDefaultMilestones = async (userId: string): Promise<string[]> =>
     },
   ];
 
-  try {
-    // Ensure Firestore is initialized
-    if (!db) {
-      throw new Error('Firestore database is not initialized');
-    }
-
-    // Validate Firestore collection name
-    if (!MILESTONES_COLLECTION) {
-      throw new Error('Milestones collection name is not defined');
-    }
-
-    // Prepare batch write for better performance and atomicity
-    const milestonePromises = defaultMilestones.map(async (milestone) => {
-      try {
-        // Validate milestone data before sending
-        const validatedMilestone = {
-          ...milestone,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        };
-
-        // Log the milestone being added for debugging
-        console.log('Adding milestone:', JSON.stringify(validatedMilestone, null, 2));
-
-        // Add milestone directly
-        const docRef = await addDoc(collection(db, MILESTONES_COLLECTION), validatedMilestone);
-
-        return docRef.id;
-      } catch (addError) {
-        console.error('Failed to add individual milestone:', addError);
-
-        // Log the specific error details
-        if (addError instanceof Error) {
-          console.error('Error name:', addError.name);
-          console.error('Error message:', addError.message);
-        }
-
-        throw addError;
-      }
-    });
-
-    // Wait for all milestones to be added
-    const milestoneIds = await Promise.all(milestonePromises);
-
-    // Log successful milestone addition
-    console.log(`Added ${milestoneIds.length} default milestones for user ${userId}`);
-
-    return milestoneIds;
-  } catch (error) {
-    // Comprehensive error handling
-    console.error('Error adding default milestones:', error);
-
-    // Distinguish between different error types
-    if (error instanceof Error) {
-      console.error('Error name:', error.name);
-      console.error('Error message:', error.message);
-      console.error('Error stack:', error.stack);
-    }
-
-    // Rethrow with a user-friendly message
-    throw new Error(
-      'Failed to add default milestones. Please check your connection and try again.'
-    );
+  // Ensure Firestore is initialized
+  if (!db) {
+    throw new Error('Firestore database is not initialized');
   }
+
+  // Validate Firestore collection name
+  if (!MILESTONES_COLLECTION) {
+    throw new Error('Milestones collection name is not defined');
+  }
+
+  // Prepare batch write for better performance and atomicity
+  const milestonePromises = defaultMilestones.map(async (milestone) => {
+    const validatedMilestone = {
+      ...milestone,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    const docRef = await addDoc(collection(db, MILESTONES_COLLECTION), validatedMilestone);
+
+    return docRef.id;
+  });
+
+  // Wait for all milestones to be added
+  const milestoneIds = await Promise.all(milestonePromises);
+
+  return milestoneIds;
 };

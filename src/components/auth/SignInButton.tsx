@@ -1,9 +1,7 @@
-'use client';
-
+import React, { ReactNode, cloneElement, isValidElement } from 'react';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/config/firebase';
 import { useAuthStore } from '@/stores/authStore';
-import { ReactNode, cloneElement, isValidElement } from 'react';
 import { FaGoogle } from 'react-icons/fa';
 
 interface SignInButtonProps {
@@ -24,8 +22,8 @@ export const SignInButton = ({ children, className }: SignInButtonProps) => {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       setUser(result.user);
-    } catch (error) {
-      console.error('Sign in error:', error);
+    } catch {
+      // Silently handle sign-in errors
     }
   };
 
@@ -42,14 +40,13 @@ export const SignInButton = ({ children, className }: SignInButtonProps) => {
     });
   }
 
-  // Default button rendering
   return (
-    <button
-      onClick={handleSignIn}
-      className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 ${className || ''}`}
+    <button 
+      onClick={handleSignIn} 
+      className={`flex items-center justify-center ${className}`}
     >
       <FaGoogle className="mr-2" />
-      {children || 'Sign In with Google'}
+      {children || 'Sign in with Google'}
     </button>
   );
 };

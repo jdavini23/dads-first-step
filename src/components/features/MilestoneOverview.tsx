@@ -1,9 +1,8 @@
-'use client';
+import React from 'react';
 
 import { motion } from 'framer-motion';
 import { useMilestoneStore } from '@/stores/milestoneStore';
 import { useAuthStore } from '@/stores/authStore';
-import { defaultMilestones } from '@/utils/milestoneTemplates';
 import { getMilestonesForUser } from '@/services/milestoneService';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
@@ -19,10 +18,10 @@ export const MilestoneOverview = () => {
       if (!user) return;
       setIsLoading(true);
       try {
-        const milestoneData = await getMilestonesForUser(user.uid);
-        setMilestones(milestoneData);
-      } catch (error) {
-        console.error('Error fetching milestones:', error);
+        const fetchedMilestones = await getMilestonesForUser(user.uid);
+        setMilestones(fetchedMilestones);
+      } catch {
+        // Silently handle fetch errors
       } finally {
         setIsLoading(false);
       }
@@ -46,7 +45,7 @@ export const MilestoneOverview = () => {
   }
 
   // Get unique milestones by template ID
-  const uniqueMilestones = defaultMilestones.slice(0, 4);
+  const uniqueMilestones = milestones;
 
   return (
     <motion.div

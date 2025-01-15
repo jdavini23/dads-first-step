@@ -20,17 +20,17 @@ const validateFirebaseConfig = (config: FirebaseOptions) => {
 
   if (missingFields.length > 0) {
     const errorMessage = `Missing required Firebase configuration fields: ${missingFields.join(', ')}`;
-    console.error(`❌ Firebase Configuration Error: ${errorMessage}`);
+    
     throw new Error(errorMessage);
   }
 
   // Additional validation for API key format
   if (config.apiKey && !/^[A-Za-z0-9_-]{39}$/.test(config.apiKey as string)) {
-    console.error('❌ Invalid Firebase API Key format');
+    
     throw new Error('Invalid Firebase API Key');
   }
 
-  console.log('✅ Firebase configuration validated successfully');
+  
 };
 
 // Firebase configuration
@@ -61,10 +61,9 @@ const initializeFirestoreWithSettings = (app: FirebaseApp) => {
       connectFirestoreEmulator(db, 'localhost', 8080);
     }
 
-    console.log('✅ Firestore initialized with advanced settings');
+    
     return db;
   } catch (err) {
-    console.error('❌ Firestore initialization error:', err);
     toast.error('Failed to initialize Firestore. Please check your network connection.');
     throw err;
   }
@@ -96,20 +95,15 @@ class FirebaseService {
       // Set up auth state listener
       this.auth.onAuthStateChanged((user) => {
         if (user) {
-          console.log('User is signed in:', user.uid);
+          // User is signed in
+          return user;
         } else {
-          console.log('User is signed out');
+          // User is signed out
+          return null;
         }
       });
 
-      console.log('✅ Firebase services initialized successfully', {
-        appName: this.app.name,
-        projectId: firebaseConfig.projectId,
-        authDomain: firebaseConfig.authDomain,
-        environment: process.env.NODE_ENV,
-      });
     } catch (error) {
-      console.error('❌ Failed to initialize Firebase:', error);
       toast.error('Failed to initialize Firebase. Please check your configuration.');
       throw error;
     }

@@ -1,4 +1,4 @@
-'use client';
+import React from 'react';
 
 import { useState } from 'react';
 import { MilestoneTracker } from '@/components/features/MilestoneTracker';
@@ -32,9 +32,8 @@ export default function MilestonesPage() {
 
       toast.success(`Added milestone: ${newMilestone.title}`);
       setSelectedTemplate(null);
-    } catch (error) {
+    } catch {
       toast.error('Failed to add milestone');
-      console.error(error);
     }
   };
 
