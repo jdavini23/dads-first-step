@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --config eslint.config.js",
-    "lint:fix": "next lint --config eslint.config.js --fix",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,md,json}\"",
     "prepare": "husky install",
     "clean": "rimraf .next",
@@ -31,10 +31,10 @@
   },
   "devDependencies": {
     "@types/react": "latest",
-    "@typescript-eslint/eslint-plugin": "latest",
-    "@typescript-eslint/parser": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "eslint-config-next": "^15.1.4",
     "eslint-config-prettier": "latest",
     "eslint-plugin-jsx-a11y": "latest",
     "eslint-plugin-react": "latest",
@@ -43,7 +43,8 @@
     "husky": "latest",
     "lint-staged": "latest",
     "prettier": "latest",
-    "tailwindcss": "latest"
+    "tailwindcss": "latest",
+    "typescript": "^5.7.3"
   },
   "husky": {
     "hooks": {
