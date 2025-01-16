@@ -11,7 +11,7 @@ export function MilestoneHeader() {
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Baby Milestones</h1>
         <nav>
-          <Link href={Routes.milestonesAdd}>
+          <Link href={{ pathname: Routes.milestonesAdd }}>
             <Button variant="default">Add Milestone</Button>
           </Link>
         </nav>
