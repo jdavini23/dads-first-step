@@ -137,7 +137,7 @@ export default function Home() {
 
               <div className="flex flex-wrap gap-4">
                 {_user ? (
-                  <AppLink href={Routes.milestones} aria-label="Track Milestones">
+                  <AppLink href={Routes.MILESTONES} aria-label="Track Milestones">
                     <Button
                       size="lg"
                       className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all"
@@ -285,7 +285,7 @@ export default function Home() {
               </p>
 
               {_user ? (
-                <AppLink href={Routes.milestones} aria-label="View Your Milestones">
+                <AppLink href={Routes.MILESTONES} aria-label="View Your Milestones">
                   <Button
                     variant="outline"
                     size="lg"
