@@ -3,11 +3,10 @@ import { persist } from 'zustand/middleware';
 import { User } from 'firebase/auth';
 
 export interface AuthState {
-  user: User | null;
+  _user: User | null;
   loading: boolean;
   error: Error | null;
   isAuthenticated: boolean;
-  accessToken: string | null;
   initialized: boolean;
   setUser: (user: User | null) => void;
 }
@@ -15,16 +14,15 @@ export interface AuthState {
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      user: null,
+      _user: null,
       loading: true,
       error: null,
       isAuthenticated: false,
-      accessToken: null,
       initialized: false,
       setUser: (user: User | null) => {
         if (user) {
           set({
-            user,
+            _user: user,
             isAuthenticated: true,
             loading: false,
             error: null,
@@ -32,7 +30,7 @@ const useAuthStore = create<AuthState>()(
           });
         } else {
           set({
-            user: null,
+            _user: null,
             isAuthenticated: false,
             loading: false,
             error: null,
@@ -44,7 +42,7 @@ const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage',
       partialize: (state) => ({
-        accessToken: state.accessToken,
+        isAuthenticated: state.isAuthenticated,
         initialized: state.initialized,
       }),
     }

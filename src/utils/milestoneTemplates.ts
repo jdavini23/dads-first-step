@@ -1,11 +1,12 @@
 import { IconType } from 'react-icons';
 import { FaSmile, FaChild, FaBook, FaWalking, FaMusic } from 'react-icons/fa';
-import { MilestoneCategory, MilestoneDifficulty, UserMilestone } from '@/types/milestone';
+import { MilestoneCategory, MilestoneDifficulty, UserMilestone, MilestoneType } from '@/types/milestone';
 
 interface MilestoneTemplate {
   id: string;
   title: string;
   description: string;
+  type: MilestoneType;
   category: MilestoneCategory;
   minAge: number;
   maxAge: number;
@@ -20,6 +21,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
     id: '1',
     title: 'First Smile',
     description: 'Your baby\'s first social smile, typically in response to your face or voice',
+    type: MilestoneType.SOCIAL,
     category: MilestoneCategory.SOCIAL,
     minAge: 1,
     maxAge: 3,
@@ -32,6 +34,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
     id: '2',
     title: 'Rolling Over',
     description: 'Baby can roll from back to tummy and tummy to back',
+    type: MilestoneType.PHYSICAL,
     category: MilestoneCategory.PHYSICAL,
     minAge: 3,
     maxAge: 6,
@@ -44,6 +47,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
     id: '3',
     title: 'First Words',
     description: 'Your baby saying their first meaningful words',
+    type: MilestoneType.COGNITIVE,
     category: MilestoneCategory.COGNITIVE,
     minAge: 9,
     maxAge: 14,
@@ -56,6 +60,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
     id: '4',
     title: 'Walking',
     description: 'Taking first independent steps',
+    type: MilestoneType.PHYSICAL,
     category: MilestoneCategory.PHYSICAL,
     minAge: 9,
     maxAge: 18,
@@ -68,6 +73,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
     id: '5',
     title: 'Musical Response',
     description: 'Moving to music and showing rhythm awareness',
+    type: MilestoneType.COGNITIVE,
     category: MilestoneCategory.COGNITIVE,
     minAge: 6,
     maxAge: 12,
@@ -88,6 +94,7 @@ export function convertTemplateToMilestone(
     userId: userId || '',
     title: template.title,
     description: template.description,
+    type: template.type,
     category: template.category,
     minAge: template.minAge,
     maxAge: template.maxAge,
@@ -98,5 +105,6 @@ export function convertTemplateToMilestone(
     resources: template.resources || [],
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
+    date: now,
   };
 }

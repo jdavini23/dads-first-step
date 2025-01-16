@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import { UserMilestone } from '@/types/milestone';
 
 export interface MilestoneState {
@@ -10,11 +10,15 @@ export interface MilestoneState {
   addMilestone: (milestone: UserMilestone) => void;
   updateMilestone: (id: string, updates: Partial<UserMilestone>) => void;
   removeMilestone: (id: string) => void;
+  filterMilestones: (filters: {
+    type?: string;
+    completed?: boolean;
+  }) => UserMilestone[];
 }
 
 const useMilestoneStore = create<MilestoneState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       milestones: [],
       loading: false,
       error: null,
@@ -31,14 +35,18 @@ const useMilestoneStore = create<MilestoneState>()(
         set((state) => ({
           milestones: state.milestones.filter((m) => m.id !== id),
         })),
+      filterMilestones: ({ type, completed }) => {
+        const { milestones } = get();
+        return milestones.filter((milestone) => 
+          (!type || milestone.type === type) && 
+          (completed === undefined || milestone.completed === completed)
+        );
+      },
     }),
     {
       name: 'milestone-storage',
-      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         milestones: state.milestones,
-        loading: state.loading,
-        error: state.error,
       }),
     }
   )

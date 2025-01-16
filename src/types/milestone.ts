@@ -1,3 +1,10 @@
+export enum MilestoneType {
+  PHYSICAL = 'PHYSICAL',
+  COGNITIVE = 'COGNITIVE',
+  SOCIAL = 'SOCIAL',
+  EMOTIONAL = 'EMOTIONAL',
+}
+
 export enum MilestoneCategory {
   PHYSICAL = 'physical',
   COGNITIVE = 'cognitive',
@@ -6,52 +13,60 @@ export enum MilestoneCategory {
 }
 
 export enum MilestoneDifficulty {
-  EASY = 'Easy',
-  MEDIUM = 'Medium',
-  HARD = 'Hard',
+  EASY = 'EASY',
+  MEDIUM = 'MEDIUM', 
+  HARD = 'HARD',
 }
 
-export interface Milestone {
+export type Milestone = {
   id: string;
   title: string;
   description: string;
+  type: MilestoneType;
   category: MilestoneCategory;
-  minAge: number; // in months
-  maxAge: number; // in months
   difficulty: MilestoneDifficulty;
-  skills: string[];
-  resources?: string[];
-}
-
-export interface UserMilestone extends Milestone {
-  userId: string;
+  date: Date;
   completed: boolean;
+};
+
+export type UserMilestone = Milestone & {
+  userId: string;
+  minAge?: number;
+  maxAge?: number;
+  progress?: number;
   completedAt?: Date | null;
   notes?: string;
-  progress: number; // 0-100
-  createdAt: string;
-  updatedAt: string;
-}
+  resources?: string[];
+  skills?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+};
 
-export interface MilestoneTrackerState {
-  milestones: UserMilestone[];
-  loading: boolean;
-  error: string | null;
-  filters: {
-    category?: MilestoneCategory;
-    minProgress?: number;
-    completed?: boolean;
+export type MilestoneFilters = {
+  type?: MilestoneType;
+  category?: MilestoneCategory;
+  difficulty?: MilestoneDifficulty;
+  completed?: boolean;
+};
+
+export const filterMilestones = (
+  milestones: UserMilestone[], 
+  filters: MilestoneFilters
+): UserMilestone[] => {
+  return milestones.filter((milestone) => 
+    (!filters.type || milestone.type === filters.type) && 
+    (!filters.category || milestone.category === filters.category) &&
+    (!filters.difficulty || milestone.difficulty === filters.difficulty) &&
+    (filters.completed === undefined || milestone.completed === filters.completed)
+  );
+};
+
+export const createMilestone = (
+  userId: string, 
+  milestone: Omit<UserMilestone, 'id'>
+): UserMilestone => {
+  return {
+    id: Date.now().toString(),
+    ...milestone,
   };
-  fetchMilestones: (userId: string) => Promise<void>;
-  updateMilestone: (milestoneId: string, updates: Partial<UserMilestone>) => Promise<void>;
-  getFilteredMilestones: () => UserMilestone[];
-  setFilters: (filters: MilestoneTrackerState['filters']) => void;
-  reset: () => void;
-}
-
-export interface MilestoneService {
-  getMilestones(userId: string): Promise<UserMilestone[]>;
-  addMilestone(milestone: UserMilestone): Promise<void>;
-  updateMilestone(milestoneId: string, updates: Partial<UserMilestone>): Promise<void>;
-  deleteMilestone(milestoneId: string): Promise<void>;
-}
+};

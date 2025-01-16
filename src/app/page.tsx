@@ -1,6 +1,9 @@
-import React from 'react';
+"use client";
 
+import React from 'react';
 import Link from 'next/link';
+import { UrlObject } from 'url';
+import { Routes, Route } from '@/types/routes';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FaBaby, FaHeart, FaBook, FaCalendarCheck } from 'react-icons/fa';
@@ -10,18 +13,18 @@ import { useAuthStore } from '@/stores/authStore';
 import { SignInButton } from '@/components/auth/SignInButton';
 
 interface FeatureCardProps {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: typeof FaBaby;
   title: string;
   description: string;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, description }) => (
+const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => (
   <motion.div
     whileHover={{ scale: 1.05 }}
     className="bg-white shadow-lg rounded-xl p-6 text-center transition-all"
   >
     <div className="mb-4 flex justify-center">
-      <Icon className="text-5xl text-blue-600" />
+      <Icon className="w-12 h-12 text-blue-600" />
     </div>
     <h3 className="text-xl font-bold mb-3 text-gray-800">{title}</h3>
     <p className="text-gray-600">{description}</p>
@@ -29,7 +32,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, descriptio
 );
 
 export default function Home() {
-  const { user } = useAuthStore();
+  const { _user } = useAuthStore();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
@@ -48,8 +51,8 @@ export default function Home() {
             transformative adventure of your life.
           </p>
 
-          {user ? (
-            <Link href="/milestones">
+          {_user ? (
+            <Link href={{ pathname: Routes.milestones } as UrlObject}>
               <Button size="lg" className="mr-4">
                 Track Milestones
               </Button>
@@ -61,11 +64,11 @@ export default function Home() {
               </Button>
             </SignInButton>
           )}
-          <Link href="/about">
-            <Button variant="outline" size="lg">
-              Learn More
-            </Button>
-          </Link>
+         <Link href={{ pathname: Routes.about } as UrlObject}>
+  <Button variant="outline" size="lg">
+    Learn More
+  </Button>
+</Link>
         </motion.div>
 
         <motion.div
@@ -116,7 +119,7 @@ export default function Home() {
       </div>
 
       {/* Personalized Section */}
-      {user && (
+      {_user && (
         <div className="container mx-auto px-4 py-16">
           <MilestoneOverview />
         </div>
@@ -136,8 +139,8 @@ export default function Home() {
               every step of the way.
             </p>
 
-            {user ? (
-              <Link href="/milestones">
+            {_user ? (
+              <Link href={{ pathname: Routes.milestones } as UrlObject}>
                 <Button
                   variant="outline"
                   size="lg"

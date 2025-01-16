@@ -1,17 +1,23 @@
 import React from 'react';
-import { Metadata } from 'next';
-import { APP_NAME } from '../constants'
-import { RootProvider } from '@/components/providers/RootProvider'
+import { APP_NAME } from '../constants';
+import { MilestoneHeader } from '@/components/milestones/MilestoneHeader';
 
-export const metadata: Metadata = {
-  title: `Milestones | ${APP_NAME}`,
+export const metadata = {
+  title: `${APP_NAME} - Milestones`,
   description: "Track and celebrate your baby's important milestones",
 };
 
-export default function MilestonesLayout({ children }: { children: React.ReactNode }) {
+export default function MilestonesLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <RootProvider>{children}</RootProvider>
+    <div className="flex flex-col min-h-screen">
+      <MilestoneHeader />
+      <main className="flex-grow container mx-auto px-4 py-8">
+        {children}
+      </main>
     </div>
   );
 }
