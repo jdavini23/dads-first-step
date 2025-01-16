@@ -1,9 +1,9 @@
 "use client";
 
-import React, { Suspense, memo } from 'react';
+import * as React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion/dist/es/index';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/stores/authStore';
 import { SignInButton } from '@/components/auth/SignInButton';
@@ -23,28 +23,19 @@ interface FeatureCardProps {
   description: string;
 }
 
-const FeatureCard = memo(({ icon: Icon, title, description }: FeatureCardProps) => (
+const FeatureCard: React.FC<FeatureCardProps> = React.memo(({ icon: Icon, title, description }) => (
   <motion.div
     whileHover={{ scale: 1.05 }}
     className="bg-white shadow-lg rounded-xl p-6 text-center transition-all hover:shadow-xl border border-primary-100"
     role="article"
-    aria-labelledby={`feature-${title.replace(/\s+/g, '-').toLowerCase()}`}
   >
     <div className="mb-4 flex justify-center">
-      <Icon 
-        className="w-12 h-12 text-primary-500 transition-colors group-hover:text-primary-600" 
-        aria-hidden="true" 
-      />
+      <Icon className="text-4xl text-primary-500" />
     </div>
-    <h3 
-      id={`feature-${title.replace(/\s+/g, '-').toLowerCase()}`} 
-      className="text-xl font-heading font-bold mb-3 text-neutral-800"
-    >
-      {title}
-    </h3>
-    <p className="text-neutral-600 font-body">{description}</p>
+    <h3 className="text-xl font-semibold mb-2">{title}</h3>
+    <p className="text-muted-foreground">{description}</p>
   </motion.div>
-));
+))
 
 FeatureCard.displayName = 'FeatureCard';
 
@@ -118,7 +109,7 @@ export default function Home() {
               className="hidden md:block relative z-10"
             >
               <div className="bg-gradient-to-br from-primary-100 to-accent-100 rounded-full p-8 shadow-xl">
-                <Suspense fallback={<IllustrationLoader />}>
+                <React.Suspense fallback={<IllustrationLoader />}>
                   <Image
                     src="/dad-baby-illustration.svg"
                     alt="Father and Child Playing"
@@ -129,7 +120,7 @@ export default function Home() {
                     placeholder="blur"
                     blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
                   />
-                </Suspense>
+                </React.Suspense>
               </div>
               
               {/* Decorative elements */}
