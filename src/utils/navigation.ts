@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Route, Routes, getRoutePath } from '@/types/routes';
 
 /**
@@ -7,6 +7,7 @@ import { Route, Routes, getRoutePath } from '@/types/routes';
  */
 export const useNavigation = () => {
   const router = useRouter();
+  const pathname = usePathname();
 
   return {
     /**
@@ -29,14 +30,16 @@ export const useNavigation = () => {
      * @returns The current route as a Route type
      */
     getCurrentRoute: (): Route | null => {
-      if (typeof window === 'undefined') return null;
-
-      const path = window.location.pathname;
       const matchedRoute = (Object.entries(Routes) as [Route, string][]).find(
-        ([, routePath]) => routePath === path
+        ([, routePath]) => routePath === pathname
       )?.[0];
 
       return matchedRoute || null;
     },
+
+    /**
+     * Current pathname
+     */
+    pathname,
   };
 };

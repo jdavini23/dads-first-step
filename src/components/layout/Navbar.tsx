@@ -9,30 +9,31 @@ import { Button } from '@/components/ui/Button';
 import Image from 'next/image';
 import { HiOutlineSearch, HiOutlineMenu, HiOutlineX, HiOutlineChevronDown } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SignInButton } from '@/components/auth/SignInButton';
 
 const navLinks = [
   {
     label: 'Home',
-    href: Routes.home,
+    href: Routes.HOME,
     dropdown: false,
   },
   {
     label: 'Features',
-    href: Routes.features,
+    href: Routes.FEATURES,
     dropdown: true,
     children: [
-      { label: 'Milestone Tracking', href: Routes.milestones },
-      { label: 'Resources', href: Routes.resources },
+      { label: 'Milestone Tracking', href: Routes.MILESTONES },
+      { label: 'Resources', href: Routes.RESOURCES },
     ],
   },
   {
     label: 'Community',
-    href: Routes.about,
+    href: Routes.ABOUT,
     dropdown: true,
     children: [
-      { label: 'Testimonials', href: Routes.testimonials },
-      { label: 'About', href: Routes.about },
-      { label: 'Contact', href: Routes.contact },
+      { label: 'Testimonials', href: Routes.TESTIMONIALS },
+      { label: 'About', href: Routes.ABOUT },
+      { label: 'Contact', href: Routes.CONTACT },
     ],
   },
 ];
@@ -41,7 +42,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const pathname = useNavigation();
+  const { pathname } = useNavigation();
   const navRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns and mobile menu when clicking outside
@@ -64,6 +65,11 @@ export function Navbar() {
     setIsMenuOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    console.log('Current Pathname:', pathname);
+    console.log('Nav Links:', navLinks);
+  }, [pathname]);
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
 
@@ -72,7 +78,7 @@ export function Navbar() {
   };
 
   const renderDropdownLinks = (links: { label: string; href: string }[]) => (
-    <div className="group-hover:block hidden absolute top-full left-0 min-w-[200px] bg-white shadow-lg rounded-lg border border-neutral-100 py-2 z-50">
+    <div className="absolute top-full left-0 min-w-[200px] bg-white shadow-lg rounded-lg border border-neutral-100 py-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
       {links.map((child, index) => (
         isValidRoute(child.href) && (
           <TypedLink
@@ -94,7 +100,7 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between relative">
         {/* Logo */}
-        <TypedLink href={Routes.home} className="flex items-center space-x-2 group">
+        <TypedLink href={Routes.HOME} className="flex items-center space-x-2 group">
           <Image
             src="/logo.svg"
             alt="Dad's First Step Logo"
@@ -136,13 +142,14 @@ export function Navbar() {
           </button>
 
           {/* Sign Up Button */}
-          <Button
-            variant="default"
-            onClick={() => (window.location.href = Routes.signUp)}
-            className="px-4 py-2 rounded-full hover:scale-105 transition-transform"
-          >
-            Get Started
-          </Button>
+          <SignInButton>
+            <Button
+              variant="default"
+              className="px-4 py-2 rounded-full hover:scale-105 transition-transform"
+            >
+              Get Started
+            </Button>
+          </SignInButton>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -201,7 +208,7 @@ export function Navbar() {
                       exit={{ opacity: 0, height: 0 }}
                       className="pl-4 mt-2 space-y-2"
                     >
-                      {link.children && link.children.map((child, childIndex) => (
+                      {link.children.map((child, childIndex) => (
                         isValidRoute(child.href) && (
                           <TypedLink
                             key={`mobile-${child.href}-${childIndex}`}
@@ -216,13 +223,14 @@ export function Navbar() {
                   )}
                 </div>
               ))}
-              <Button
-                variant="default"
-                onClick={() => (window.location.href = Routes.signUp)}
-                className="w-full py-3 text-lg rounded-full mt-4 hover:scale-105 transition-transform"
-              >
-                Get Started
-              </Button>
+              <SignInButton>
+                <Button
+                  variant="default"
+                  className="w-full py-3 text-lg rounded-full mt-4 hover:scale-105 transition-transform"
+                >
+                  Get Started
+                </Button>
+              </SignInButton>
             </div>
           </motion.div>
         )}
