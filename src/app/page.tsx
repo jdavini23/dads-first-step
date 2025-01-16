@@ -1,17 +1,21 @@
 "use client";
 
-import React, { memo } from 'react';
+import React, { Suspense, memo } from 'react';
 import Link from 'next/link';
-import { UrlObject } from 'url';
-import { Routes, Route } from '@/types/routes';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { FaBaby, FaHeart, FaBook, FaCalendarCheck } from 'react-icons/fa';
-import { MilestoneOverview } from '@/components/features/MilestoneOverview';
 import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/stores/authStore';
 import { SignInButton } from '@/components/auth/SignInButton';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
+import { FaBaby, FaHeart, FaBook, FaCalendarCheck } from 'react-icons/fa';
+import { MilestoneOverview } from '@/components/features/MilestoneOverview';
+import { Routes, createRoute } from '@/types/routes';
+
+// Skeleton loader for illustration
+const IllustrationLoader = () => (
+  <div className="w-full h-64 bg-primary-100 animate-pulse rounded-lg"></div>
+);
 
 interface FeatureCardProps {
   icon: typeof FaBaby;
@@ -67,14 +71,14 @@ export default function Home() {
               <span className="inline-block px-4 py-2 rounded-full bg-accent-100 text-accent-700 text-sm font-semibold mb-6">
                 Welcome to Fatherhood
               </span>
-              <h1 className="text-5xl font-heading font-bold mb-6 text-neutral-900 leading-tight">
+              <h1 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-neutral-900 leading-tight">
                 Your Journey into{' '}
                 <span className="text-gradient bg-gradient-to-r from-primary-600 to-accent-500">
                   Fatherhood
                 </span>{' '}
                 Starts Here
               </h1>
-              <p className="text-xl text-neutral-600 mb-8 leading-relaxed">
+              <p className="text-lg md:text-xl text-neutral-600 mb-8 leading-relaxed">
                 Dad&apos;s First Step is more than an app. It&apos;s your companion through the most
                 transformative adventure of your life.
               </p>
@@ -82,7 +86,7 @@ export default function Home() {
               <div className="flex flex-wrap gap-4">
                 {_user ? (
                   <Link 
-                    href={{ pathname: Routes.milestones } as UrlObject}
+                    href={createRoute(Routes.milestones)}
                     aria-label="Track Milestones"
                   >
                     <Button size="lg" className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all">
@@ -97,7 +101,7 @@ export default function Home() {
                   </SignInButton>
                 )}
                 <Link 
-                  href={{ pathname: Routes.about } as UrlObject}
+                  href={createRoute(Routes.about)}
                   aria-label="Learn More About Dad's First Step"
                 >
                   <Button variant="outline" size="lg" className="border-primary-500 text-primary-500 hover:bg-primary-50">
@@ -114,14 +118,18 @@ export default function Home() {
               className="hidden md:block relative z-10"
             >
               <div className="bg-gradient-to-br from-primary-100 to-accent-100 rounded-full p-8 shadow-xl">
-                <Image
-                  src="/dad-baby-illustration.svg"
-                  alt="Father and Baby Illustration"
-                  width={500}
-                  height={500}
-                  className="w-full h-auto rounded-lg transform hover:scale-105 transition-transform duration-300"
-                  priority
-                />
+                <Suspense fallback={<IllustrationLoader />}>
+                  <Image
+                    src="/dad-baby-illustration.svg"
+                    alt="Father and Child Playing"
+                    width={500}
+                    height={500}
+                    className="w-full h-auto rounded-lg transform hover:scale-105 transition-transform duration-300"
+                    priority
+                    placeholder="blur"
+                    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                  />
+                </Suspense>
               </div>
               
               {/* Decorative elements */}
@@ -220,7 +228,7 @@ export default function Home() {
 
               {_user ? (
                 <Link 
-                  href={{ pathname: Routes.milestones } as UrlObject}
+                  href={createRoute(Routes.milestones)}
                   aria-label="View Your Milestones"
                 >
                   <Button

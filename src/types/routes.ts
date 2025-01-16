@@ -1,37 +1,46 @@
 import { LinkProps } from 'next/link';
-
-export type RouteString = 
-  | '/' 
-  | '/about' 
-  | '/milestones' 
-  | '/milestones/add'
-  | `/milestones/${string}`;
+import type { Route } from 'next';
+import type { UrlObject } from 'url';
 
 export const Routes = {
-  home: '/',
-  about: '/about',
-  milestones: '/milestones',
-  milestonesAdd: '/milestones/add',
-  milestoneDetail: (id: string) => `/milestones/${id}`
+  home: '/' as Route,
+  milestones: '/milestones' as Route,
+  about: '/about' as Route,
+  profile: '/profile' as Route,
+  auth: '/auth' as Route
 } as const;
 
-export type Route = 
-  | '/' 
-  | '/about' 
-  | '/milestones' 
-  | '/milestones/add'
-  | `/milestones/${string}`;
+export type RouteKey = keyof typeof Routes;
+export type RouteValue = (typeof Routes)[RouteKey];
 
-export type LinkRoute = Route | (string & {});
+// Type for Next.js Link href prop
+export type LinkRoute = 
+  | Route 
+  | UrlObject 
+  | string 
+  | { 
+      pathname: string; 
+      query?: { [key: string]: string | number | string[] | undefined };
+      hash?: string;
+    };
+
+export function createRoute(route: RouteValue): Route {
+  return route;
+}
 
 export function createHref(path: string): string {
   return path;
 }
 
-export function asRoute(route: Route | ((id: string) => string)): string {
+export function asRoute(route: string | ((id: string) => string)): string {
   return typeof route === 'function' ? route('') : route;
 }
 
-export function asHref(route: RouteString): string {
+export function asHref(route: string): string {
   return route;
+}
+
+// Helper function to convert Routes to Link-compatible href
+export function toLinkHref(route: RouteValue): LinkRoute {
+  return { pathname: route };
 }
