@@ -144,6 +144,7 @@ export const addDefaultMilestones = async (userId: string): Promise<string[]> =>
       skills: ['Social Interaction', 'Emotional Recognition'],
       completed: false,
       progress: 0,
+      date: new Date(), // Add default date
       resources: [
         'https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones.aspx',
       ],
@@ -162,6 +163,7 @@ export const addDefaultMilestones = async (userId: string): Promise<string[]> =>
       skills: ['Motor Skills', 'Balance', 'Coordination'],
       completed: false,
       progress: 0,
+      date: new Date(), // Add default date
       resources: ['https://www.cdc.gov/ncbddd/childdevelopment/facts.html'],
       createdAt: '',
       updatedAt: ''
