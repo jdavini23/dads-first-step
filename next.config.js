@@ -4,8 +4,8 @@ const nextConfig = {
   experimental: {
     typedRoutes: true,
     optimizePackageImports: ['@mui/material', '@mui/icons-material'],
-    serverComponentsExternalPackages: ['@prisma/client']
   },
+  serverExternalPackages: ['@prisma/client'],
   eslint: {
     ignoreDuringBuilds: true
   },
@@ -19,11 +19,12 @@ const nextConfig = {
         ...config.resolve.fallback,
         fs: false,
         net: false,
-        tls: false
+        tls: false,
+        crypto: false,
       };
     }
     return config;
-  }
-};
+  },
+}
 
 export default nextConfig;

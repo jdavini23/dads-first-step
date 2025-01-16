@@ -1,6 +1,8 @@
+'use client';
+
 import React from 'react';
 import { UrlObject } from 'url';
-import Link, { LinkProps } from 'next/link';
+import Link from 'next/link';
 import { Route, Routes, isValidRoute, asHref, ExtendedRouteValue } from '@/types/routes';
 
 type NextUrlObject = {
@@ -12,13 +14,14 @@ type NextUrlObject = {
 /**
  * Props for the TypedLink component
  */
-interface TypedLinkProps extends Omit<LinkProps<string>, 'href'> {
+interface TypedLinkProps {
   route?: Route;
   href?: ExtendedRouteValue;
   children: React.ReactNode;
   className?: string;
   target?: '_blank' | '_self' | '_parent' | '_top';
   params?: { [key: string]: string };
+  [key: string]: any;
 }
 
 /**
@@ -67,7 +70,7 @@ export const TypedLink = ({
 
   return (
     <Link 
-      href={linkHref}
+      href={linkHref as any}
       className={className}
       target={target}
       {...props}
