@@ -15,7 +15,12 @@ export const Routes = {
   milestoneDetail: (id: string) => `/milestones/${id}`
 } as const;
 
-export type Route = typeof Routes[keyof typeof Routes];
+export type Route = 
+  | '/' 
+  | '/about' 
+  | '/milestones' 
+  | '/milestones/add'
+  | `/milestones/${string}`;
 
 export type LinkRoute = Route | (string & {});
 
@@ -23,8 +28,8 @@ export function createHref(path: string): string {
   return path;
 }
 
-export function asRoute(route: Route): string {
-  return route;
+export function asRoute(route: Route | ((id: string) => string)): string {
+  return typeof route === 'function' ? route('') : route;
 }
 
 export function asHref(route: RouteString): string {
