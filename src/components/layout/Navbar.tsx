@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import type { Route } from 'next/types';
+import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { Routes } from '@/types/routes';
 import { Button } from '@/components/ui/Button';
@@ -12,7 +14,6 @@ import {
   HiOutlineChevronDown 
 } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname } from 'next/navigation';
 
 const NavLinks = [
   { 
@@ -31,7 +32,7 @@ const NavLinks = [
   },
   { 
     label: 'Community', 
-    href: '#', 
+    href: Routes.about, 
     dropdown: true,
     children: [
       { label: 'Testimonials', href: Routes.testimonials },
@@ -80,7 +81,7 @@ export function Navbar() {
       {links.map((child) => (
         <Link
           key={child.href}
-          href={child.href}
+          href={child.href as Route}
           className="block px-4 py-2 hover:bg-neutral-50 text-neutral-700 hover:text-primary-600 transition-colors"
         >
           {child.label}
@@ -97,7 +98,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between relative">
         {/* Logo */}
         <Link 
-          href={Routes.home} 
+          href={Routes.home as Route} 
           className="flex items-center space-x-2 group"
         >
           <Image 
@@ -120,7 +121,7 @@ export function Navbar() {
               className="relative group"
             >
               <Link 
-                href={link.href}
+                href={link.href as Route}
                 className="flex items-center text-neutral-700 hover:text-primary-600 transition-colors"
               >
                 {link.label}
@@ -189,7 +190,7 @@ export function Navbar() {
                     onClick={() => link.dropdown && toggleDropdown(link.label)}
                     className="flex items-center justify-between text-2xl text-neutral-800 hover:text-primary-600 transition-colors cursor-pointer"
                   >
-                    <Link href={link.href}>{link.label}</Link>
+                    <Link href={link.href as Route}>{link.label}</Link>
                     {link.dropdown && (
                       <HiOutlineChevronDown 
                         className={`h-6 w-6 transition-transform ${
@@ -208,7 +209,7 @@ export function Navbar() {
                       {link.children.map((child) => (
                         <Link
                           key={child.href}
-                          href={child.href}
+                          href={child.href as Route}
                           className="block text-lg text-neutral-700 hover:text-primary-600 transition-colors"
                         >
                           {child.label}

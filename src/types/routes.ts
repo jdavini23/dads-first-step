@@ -1,23 +1,23 @@
 import { LinkProps } from 'next/link';
-import type { Route } from 'next';
+import type { Route } from 'next/types';
 import type { UrlObject } from 'url';
 
 export const Routes = {
   home: '/' as Route,
-  milestones: '/milestones' as Route,
-  milestonesAdd: '/milestones/add' as Route,
   about: '/about' as Route,
   features: '/features' as Route,
   resources: '/resources' as Route,
+  milestones: '/milestones' as Route,
   testimonials: '/testimonials' as Route,
   contact: '/contact' as Route,
+  signUp: '/sign-up' as Route,
+  milestonesAdd: '/milestones/add' as Route,
   profile: '/profile' as Route,
   auth: '/auth' as Route,
-  signUp: '/signup' as Route
 } as const;
 
 export type RouteKey = keyof typeof Routes;
-export type RouteValue = (typeof Routes)[RouteKey];
+export type RouteValue = typeof Routes[RouteKey];
 
 // Type alias for route strings
 export type RouteString = RouteValue;
