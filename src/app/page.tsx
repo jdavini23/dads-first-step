@@ -22,23 +22,23 @@ interface FeatureCardProps {
 const FeatureCard = memo(({ icon: Icon, title, description }: FeatureCardProps) => (
   <motion.div
     whileHover={{ scale: 1.05 }}
-    className="bg-white shadow-lg rounded-xl p-6 text-center transition-all"
+    className="bg-white shadow-lg rounded-xl p-6 text-center transition-all hover:shadow-xl border border-primary-100"
     role="article"
     aria-labelledby={`feature-${title.replace(/\s+/g, '-').toLowerCase()}`}
   >
     <div className="mb-4 flex justify-center">
       <Icon 
-        className="w-12 h-12 text-blue-600" 
+        className="w-12 h-12 text-primary-500 transition-colors group-hover:text-primary-600" 
         aria-hidden="true" 
       />
     </div>
     <h3 
       id={`feature-${title.replace(/\s+/g, '-').toLowerCase()}`} 
-      className="text-xl font-bold mb-3 text-gray-800"
+      className="text-xl font-heading font-bold mb-3 text-neutral-800"
     >
       {title}
     </h3>
-    <p className="text-gray-600">{description}</p>
+    <p className="text-neutral-600 font-body">{description}</p>
   </motion.div>
 ));
 
@@ -50,7 +50,7 @@ export default function Home() {
   return (
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <main 
-        className="min-h-screen bg-gradient-to-br from-blue-50 to-white" 
+        className="min-h-screen bg-gradient-to-br from-primary-50 to-white font-body" 
         aria-label="Dad's First Step Home Page"
       >
         {/* Hero Section */}
@@ -64,38 +64,40 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-5xl font-bold mb-6 text-gray-900">
-              Your Journey into Fatherhood Starts Here
+            <h1 className="text-5xl font-heading font-bold mb-6 text-neutral-900 leading-tight">
+              Your Journey into <span className="text-primary-600">Fatherhood</span> Starts Here
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-neutral-600 mb-8 leading-relaxed">
               Dad&apos;s First Step is more than an app. It&apos;s your companion through the most
               transformative adventure of your life.
             </p>
 
-            {_user ? (
+            <div className="flex flex-wrap gap-4">
+              {_user ? (
+                <Link 
+                  href={{ pathname: Routes.milestones } as UrlObject}
+                  aria-label="Track Milestones"
+                >
+                  <Button size="lg" className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all">
+                    Track Milestones
+                  </Button>
+                </Link>
+              ) : (
+                <SignInButton>
+                  <Button size="lg" className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all">
+                    Get Started
+                  </Button>
+                </SignInButton>
+              )}
               <Link 
-                href={{ pathname: Routes.milestones } as UrlObject}
-                aria-label="Track Milestones"
+                href={{ pathname: Routes.about } as UrlObject}
+                aria-label="Learn More About Dad's First Step"
               >
-                <Button size="lg" className="mr-4">
-                  Track Milestones
+                <Button variant="outline" size="lg" className="border-primary-500 text-primary-500 hover:bg-primary-50">
+                  Learn More
                 </Button>
               </Link>
-            ) : (
-              <SignInButton>
-                <Button size="lg" className="mr-4">
-                  Get Started
-                </Button>
-              </SignInButton>
-            )}
-            <Link 
-              href={{ pathname: Routes.about } as UrlObject}
-              aria-label="Learn More About Dad's First Step"
-            >
-              <Button variant="outline" size="lg">
-                Learn More
-              </Button>
-            </Link>
+            </div>
           </motion.div>
 
           <motion.div
@@ -104,13 +106,13 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="hidden md:block"
           >
-            <div className="bg-blue-100 rounded-full p-8">
+            <div className="bg-primary-100 rounded-full p-8 shadow-xl">
               <Image
                 src="/dad-baby-illustration.svg"
                 alt="Father and Baby Illustration"
                 width={500}
                 height={500}
-                className="w-full h-auto rounded-lg shadow-2xl"
+                className="w-full h-auto rounded-lg transform hover:scale-105 transition-transform duration-300"
                 priority
               />
             </div>
@@ -119,12 +121,12 @@ export default function Home() {
 
         {/* Features Section */}
         <section 
-          className="container mx-auto px-4 py-16" 
+          className="container mx-auto px-4 py-16 bg-gradient-to-b from-white to-primary-50" 
           aria-labelledby="features-heading"
         >
           <h2 
             id="features-heading" 
-            className="text-4xl font-bold text-center mb-12 text-gray-900"
+            className="text-4xl font-heading font-bold text-center mb-12 text-neutral-900"
           >
             Empowering Dads, One Milestone at a Time
           </h2>
@@ -155,7 +157,7 @@ export default function Home() {
         {/* Personalized Section */}
         {_user && (
           <section 
-            className="container mx-auto px-4 py-16" 
+            className="container mx-auto px-4 py-16 bg-white" 
             aria-label="Personalized Milestone Overview"
           >
             <MilestoneOverview />
@@ -164,7 +166,7 @@ export default function Home() {
 
         {/* Call to Action */}
         <section 
-          className="bg-blue-600 text-white py-16" 
+          className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16" 
           aria-labelledby="cta-heading"
         >
           <div className="container mx-auto px-4 text-center">
@@ -172,14 +174,15 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
+              className="max-w-3xl mx-auto"
             >
               <h2 
                 id="cta-heading" 
-                className="text-4xl font-bold mb-6"
+                className="text-4xl font-heading font-bold mb-6"
               >
                 Your Fatherhood Journey Matters
               </h2>
-              <p className="text-xl mb-8 max-w-2xl mx-auto">
+              <p className="text-xl mb-8 text-primary-50 leading-relaxed">
                 Every dad&apos;s path is unique. We&apos;re here to support, guide, and celebrate you
                 every step of the way.
               </p>
@@ -192,7 +195,7 @@ export default function Home() {
                   <Button
                     variant="outline"
                     size="lg"
-                    className="text-white border-white hover:bg-white hover:text-blue-600"
+                    className="text-white border-white hover:bg-white hover:text-primary-600 shadow-lg hover:shadow-xl transition-all"
                   >
                     View Your Milestones
                   </Button>
@@ -201,7 +204,7 @@ export default function Home() {
                 <SignInButton>
                   <Button 
                     size="lg" 
-                    className="bg-white text-blue-600 hover:bg-blue-50"
+                    className="bg-white text-primary-600 hover:bg-primary-50 shadow-lg hover:shadow-xl transition-all"
                   >
                     Join Now
                   </Button>

@@ -2,57 +2,100 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Modern color palette */
-  --color-primary: theme('colors.blue.600');
-  --color-secondary: theme('colors.purple.600');
-  --color-background: theme('colors.blue.50');
-  --color-text-primary: theme('colors.gray.900');
-  --color-text-secondary: theme('colors.gray.600');
+@layer base {
+  :root {
+    /* Font families */
+    --font-heading: var(--font-montserrat);
+    --font-body: var(--font-inter);
 
-  /* Smooth typography */
-  scroll-behavior: smooth;
+    /* Color system */
+    --color-primary-50: theme('colors.primary.50');
+    --color-primary-100: theme('colors.primary.100');
+    --color-primary-200: theme('colors.primary.200');
+    --color-primary-300: theme('colors.primary.300');
+    --color-primary-400: theme('colors.primary.400');
+    --color-primary-500: theme('colors.primary.500');
+    --color-primary-600: theme('colors.primary.600');
+    --color-primary-700: theme('colors.primary.700');
+    --color-primary-800: theme('colors.primary.800');
+    --color-primary-900: theme('colors.primary.900');
+
+    --color-accent-50: theme('colors.accent.50');
+    --color-accent-100: theme('colors.accent.100');
+    --color-accent-200: theme('colors.accent.200');
+    --color-accent-300: theme('colors.accent.300');
+    --color-accent-400: theme('colors.accent.400');
+    --color-accent-500: theme('colors.accent.500');
+    --color-accent-600: theme('colors.accent.600');
+    --color-accent-700: theme('colors.accent.700');
+    --color-accent-800: theme('colors.accent.800');
+    --color-accent-900: theme('colors.accent.900');
+
+    scroll-behavior: smooth;
+  }
 }
 
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg shadow-md transition-all duration-300 ease-in-out;
+  }
+
+  .btn-primary {
+    @apply bg-primary-500 text-white hover:bg-primary-600 shadow-lg hover:shadow-xl;
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary-500 text-primary-500 hover:bg-primary-50;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-lg p-6 transition-all duration-300;
+  }
+
+  .card-hover {
+    @apply hover:shadow-xl hover:scale-105;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-500;
+  }
+}
+
+/* Base styles */
 body {
-  @apply text-gray-900 antialiased;
-  background: linear-gradient(to bottom right, 
-    theme('colors.blue.50'), 
-    theme('colors.white'), 
-    theme('colors.purple.50')
+  @apply font-body text-neutral-900 antialiased;
+  background: linear-gradient(135deg, 
+    var(--color-primary-50) 0%,
+    theme('colors.white') 50%,
+    var(--color-accent-50) 100%
   );
   background-attachment: fixed;
 }
 
-/* Enhanced focus states */
-*:focus {
-  @apply outline-none ring-2 ring-blue-500 ring-opacity-50 rounded-md;
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-heading font-bold;
+}
+
+/* Focus states */
+*:focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-opacity-50;
 }
 
 /* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+.transition-all {
+  transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
 }
 
-/* Typography improvements */
-h1, h2, h3, h4, h5, h6 {
-  @apply font-bold text-gray-900;
-  background: linear-gradient(to right, theme('colors.blue.600'), theme('colors.purple.600'));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Animation utilities */
+.hover-lift {
+  @apply transition-transform duration-300 hover:-translate-y-1;
 }
 
-/* Improved button styles */
-.btn {
-  @apply px-4 py-2 rounded-md shadow-md transition-all duration-300 ease-in-out;
-}
-
-.btn-primary {
-  @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50;
-}
-
-.btn-secondary {
-  @apply bg-purple-600 text-white hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50;
+.hover-glow {
+  @apply transition-shadow duration-300 hover:shadow-lg hover:shadow-primary-500/20;
 }
