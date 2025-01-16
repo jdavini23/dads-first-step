@@ -1,43 +1,56 @@
 export const theme = {
   colors: {
-    // Primary colors
+    // Primary colors - Warm, trustworthy blue
     primary: {
-      50: '#EBF5FF',
-      100: '#CCE5FF',
-      200: '#99CCFF',
-      300: '#66B2FF',
-      400: '#3399FF',
-      500: '#0080FF', // Main brand color
-      600: '#0066CC',
-      700: '#004D99',
-      800: '#003366',
-      900: '#001A33',
+      50: '#EBF8FF',
+      100: '#D1EBFD',
+      200: '#A7D8FB',
+      300: '#7CC4F9',
+      400: '#52B1F7',
+      500: '#2196F5', // Main brand color - Friendly, approachable blue
+      600: '#1A75D2',
+      700: '#1557AF',
+      800: '#0F3C8C',
+      900: '#0A2669',
     },
-    // Warm accents for emotional connection
+    // Warm accents - Sunset orange for emotional warmth
     accent: {
-      50: '#FFF5EB',
-      100: '#FFE5CC',
-      200: '#FFCC99',
-      300: '#FFB266',
-      400: '#FF9933',
-      500: '#FF8000', // Main accent color
-      600: '#CC6600',
-      700: '#994D00',
-      800: '#663300',
-      900: '#331A00',
+      50: '#FFF3E6',
+      100: '#FFE0CC',
+      200: '#FFC299',
+      300: '#FFA366',
+      400: '#FF8533',
+      500: '#FF6600', // Main accent - Warm, energetic orange
+      600: '#CC5200',
+      700: '#993D00',
+      800: '#662900',
+      900: '#331400',
     },
-    // Neutral tones
+    // Supporting colors - Nurturing green
+    support: {
+      50: '#F0FDF4',
+      100: '#DCFCE7',
+      200: '#BBF7D0',
+      300: '#86EFAC',
+      400: '#4ADE80',
+      500: '#22C55E', // Main support color
+      600: '#16A34A',
+      700: '#15803D',
+      800: '#166534',
+      900: '#14532D',
+    },
+    // Neutral tones - Warm grays
     neutral: {
-      50: '#F9FAFB',
-      100: '#F3F4F6',
-      200: '#E5E7EB',
-      300: '#D1D5DB',
-      400: '#9CA3AF',
-      500: '#6B7280',
-      600: '#4B5563',
-      700: '#374151',
-      800: '#1F2937',
-      900: '#111827',
+      50: '#FAFAF9',
+      100: '#F5F5F4',
+      200: '#E7E5E4',
+      300: '#D6D3D1',
+      400: '#A8A29E',
+      500: '#78716C',
+      600: '#57534E',
+      700: '#44403C',
+      800: '#292524',
+      900: '#1C1917',
     },
     // Success, warning, error states
     success: '#22C55E',
@@ -87,5 +100,6 @@ export const theme = {
     sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+    highlight: '0 0 15px rgba(255, 102, 0, 0.15)', // Warm glow for hover states
   },
 } as const;

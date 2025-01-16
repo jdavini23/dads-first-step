@@ -5,39 +5,61 @@
 @layer base {
   :root {
     /* Font families */
-    --font-heading: var(--font-montserrat);
-    --font-body: var(--font-inter);
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Inter', sans-serif;
 
     /* Color system */
-    --color-primary-50: theme('colors.primary.50');
-    --color-primary-100: theme('colors.primary.100');
-    --color-primary-200: theme('colors.primary.200');
-    --color-primary-300: theme('colors.primary.300');
-    --color-primary-400: theme('colors.primary.400');
-    --color-primary-500: theme('colors.primary.500');
-    --color-primary-600: theme('colors.primary.600');
-    --color-primary-700: theme('colors.primary.700');
-    --color-primary-800: theme('colors.primary.800');
-    --color-primary-900: theme('colors.primary.900');
+    --color-primary-50: rgb(235 248 255);
+    --color-primary-100: rgb(209 235 253);
+    --color-primary-200: rgb(167 216 251);
+    --color-primary-300: rgb(124 196 249);
+    --color-primary-400: rgb(82 177 247);
+    --color-primary-500: rgb(33 150 245);
+    --color-primary-600: rgb(26 117 210);
+    --color-primary-700: rgb(21 87 175);
+    --color-primary-800: rgb(15 60 140);
+    --color-primary-900: rgb(10 38 105);
 
-    --color-accent-50: theme('colors.accent.50');
-    --color-accent-100: theme('colors.accent.100');
-    --color-accent-200: theme('colors.accent.200');
-    --color-accent-300: theme('colors.accent.300');
-    --color-accent-400: theme('colors.accent.400');
-    --color-accent-500: theme('colors.accent.500');
-    --color-accent-600: theme('colors.accent.600');
-    --color-accent-700: theme('colors.accent.700');
-    --color-accent-800: theme('colors.accent.800');
-    --color-accent-900: theme('colors.accent.900');
+    --color-accent-50: rgb(255 243 224);
+    --color-accent-100: rgb(254 230 180);
+    --color-accent-200: rgb(253 217 136);
+    --color-accent-300: rgb(252 204 92);
+    --color-accent-400: rgb(251 191 48);
+    --color-accent-500: rgb(250 178 4);
+    --color-accent-600: rgb(249 165 0);
+    --color-accent-700: rgb(248 152 0);
+    --color-accent-800: rgb(247 139 0);
+    --color-accent-900: rgb(246 126 0);
 
     scroll-behavior: smooth;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased text-neutral-800 bg-white;
+    background: linear-gradient(135deg, 
+      var(--color-primary-50) 0%,
+      theme('colors.white') 50%,
+      var(--color-accent-50) 100%
+    );
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold;
   }
 }
 
 @layer components {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-500;
+  }
+
   .btn {
-    @apply px-4 py-2 rounded-lg shadow-md transition-all duration-300 ease-in-out;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-200;
   }
 
   .btn-primary {
@@ -49,34 +71,34 @@
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-lg p-6 transition-all duration-300;
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden;
   }
 
-  .card-hover {
-    @apply hover:shadow-xl hover:scale-105;
+  .feature-card {
+    @apply p-6 rounded-xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-neutral-100 hover:border-primary-200;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 rounded-lg border border-neutral-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all duration-200;
   }
 }
 
 @layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-500;
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-}
 
-/* Base styles */
-body {
-  @apply font-body text-neutral-900 antialiased;
-  background: linear-gradient(135deg, 
-    var(--color-primary-50) 0%,
-    theme('colors.white') 50%,
-    var(--color-accent-50) 100%
-  );
-  background-attachment: fixed;
-}
+  .bg-blur {
+    backdrop-filter: blur(8px);
+  }
 
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-  @apply font-heading font-bold;
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+
+  .hover-glow {
+    @apply transition-shadow duration-300 hover:shadow-lg hover:shadow-primary-500/20;
+  }
 }
 
 /* Focus states */
@@ -89,13 +111,4 @@ h1, h2, h3, h4, h5, h6 {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
-}
-
-/* Animation utilities */
-.hover-lift {
-  @apply transition-transform duration-300 hover:-translate-y-1;
-}
-
-.hover-glow {
-  @apply transition-shadow duration-300 hover:shadow-lg hover:shadow-primary-500/20;
 }

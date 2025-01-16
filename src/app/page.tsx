@@ -49,136 +49,167 @@ export default function Home() {
 
   return (
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
-      <main 
-        className="min-h-screen bg-gradient-to-br from-primary-50 to-white font-body" 
-        aria-label="Dad's First Step Home Page"
-      >
+      <main className="min-h-screen font-body">
         {/* Hero Section */}
-        <div 
-          className="container mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center" 
-          role="region" 
-          aria-label="Hero Section"
-        >
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+        <div className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-accent-50">
+          <div className="absolute inset-0 bg-gradient-waves opacity-30" />
+          <div 
+            className="container relative mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center" 
+            role="region" 
+            aria-label="Hero Section"
           >
-            <h1 className="text-5xl font-heading font-bold mb-6 text-neutral-900 leading-tight">
-              Your Journey into <span className="text-primary-600">Fatherhood</span> Starts Here
-            </h1>
-            <p className="text-xl text-neutral-600 mb-8 leading-relaxed">
-              Dad&apos;s First Step is more than an app. It&apos;s your companion through the most
-              transformative adventure of your life.
-            </p>
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="relative z-10"
+            >
+              <span className="inline-block px-4 py-2 rounded-full bg-accent-100 text-accent-700 text-sm font-semibold mb-6">
+                Welcome to Fatherhood
+              </span>
+              <h1 className="text-5xl font-heading font-bold mb-6 text-neutral-900 leading-tight">
+                Your Journey into{' '}
+                <span className="text-gradient bg-gradient-to-r from-primary-600 to-accent-500">
+                  Fatherhood
+                </span>{' '}
+                Starts Here
+              </h1>
+              <p className="text-xl text-neutral-600 mb-8 leading-relaxed">
+                Dad&apos;s First Step is more than an app. It&apos;s your companion through the most
+                transformative adventure of your life.
+              </p>
 
-            <div className="flex flex-wrap gap-4">
-              {_user ? (
+              <div className="flex flex-wrap gap-4">
+                {_user ? (
+                  <Link 
+                    href={{ pathname: Routes.milestones } as UrlObject}
+                    aria-label="Track Milestones"
+                  >
+                    <Button size="lg" className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all">
+                      Track Milestones
+                    </Button>
+                  </Link>
+                ) : (
+                  <SignInButton>
+                    <Button size="lg" className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all">
+                      Get Started
+                    </Button>
+                  </SignInButton>
+                )}
                 <Link 
-                  href={{ pathname: Routes.milestones } as UrlObject}
-                  aria-label="Track Milestones"
+                  href={{ pathname: Routes.about } as UrlObject}
+                  aria-label="Learn More About Dad's First Step"
                 >
-                  <Button size="lg" className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all">
-                    Track Milestones
+                  <Button variant="outline" size="lg" className="border-primary-500 text-primary-500 hover:bg-primary-50">
+                    Learn More
                   </Button>
                 </Link>
-              ) : (
-                <SignInButton>
-                  <Button size="lg" className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all">
-                    Get Started
-                  </Button>
-                </SignInButton>
-              )}
-              <Link 
-                href={{ pathname: Routes.about } as UrlObject}
-                aria-label="Learn More About Dad's First Step"
-              >
-                <Button variant="outline" size="lg" className="border-primary-500 text-primary-500 hover:bg-primary-50">
-                  Learn More
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
+              </div>
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="hidden md:block"
-          >
-            <div className="bg-primary-100 rounded-full p-8 shadow-xl">
-              <Image
-                src="/dad-baby-illustration.svg"
-                alt="Father and Baby Illustration"
-                width={500}
-                height={500}
-                className="w-full h-auto rounded-lg transform hover:scale-105 transition-transform duration-300"
-                priority
-              />
-            </div>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="hidden md:block relative z-10"
+            >
+              <div className="bg-gradient-to-br from-primary-100 to-accent-100 rounded-full p-8 shadow-xl">
+                <Image
+                  src="/dad-baby-illustration.svg"
+                  alt="Father and Baby Illustration"
+                  width={500}
+                  height={500}
+                  className="w-full h-auto rounded-lg transform hover:scale-105 transition-transform duration-300"
+                  priority
+                />
+              </div>
+              
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-accent-100 rounded-full opacity-50 blur-xl" />
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-primary-100 rounded-full opacity-50 blur-xl" />
+            </motion.div>
+          </div>
         </div>
 
         {/* Features Section */}
         <section 
-          className="container mx-auto px-4 py-16 bg-gradient-to-b from-white to-primary-50" 
+          className="relative py-24 overflow-hidden"
           aria-labelledby="features-heading"
         >
-          <h2 
-            id="features-heading" 
-            className="text-4xl font-heading font-bold text-center mb-12 text-neutral-900"
-          >
-            Empowering Dads, One Milestone at a Time
-          </h2>
-          <div className="grid md:grid-cols-4 gap-6">
-            <FeatureCard
-              icon={FaBaby}
-              title="Milestone Tracking"
-              description="Capture and celebrate every precious moment of your child's development."
-            />
-            <FeatureCard
-              icon={FaHeart}
-              title="Emotional Support"
-              description="Resources and community to support you through fatherhood's challenges."
-            />
-            <FeatureCard
-              icon={FaBook}
-              title="Learning Resources"
-              description="Expert guides and tips to help you navigate parenting confidently."
-            />
-            <FeatureCard
-              icon={FaCalendarCheck}
-              title="Progress Insights"
-              description="Understand your child's growth and developmental stages."
-            />
+          <div className="absolute inset-0 bg-gradient-to-b from-white via-primary-50/30 to-white" />
+          <div className="container relative mx-auto px-4">
+            <div className="text-center mb-16">
+              <span className="inline-block px-4 py-2 rounded-full bg-primary-100 text-primary-700 text-sm font-semibold mb-4">
+                Features
+              </span>
+              <h2 
+                id="features-heading" 
+                className="text-4xl font-heading font-bold text-center mb-6 text-neutral-900"
+              >
+                Empowering Dads, One Milestone at a Time
+              </h2>
+              <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+                Track, learn, and celebrate every moment of your fatherhood journey with our comprehensive tools and resources.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-4 gap-8">
+              <FeatureCard
+                icon={FaBaby}
+                title="Milestone Tracking"
+                description="Capture and celebrate every precious moment of your child's development."
+              />
+              <FeatureCard
+                icon={FaHeart}
+                title="Emotional Support"
+                description="Resources and community to support you through fatherhood's challenges."
+              />
+              <FeatureCard
+                icon={FaBook}
+                title="Learning Resources"
+                description="Expert guides and tips to help you navigate parenting confidently."
+              />
+              <FeatureCard
+                icon={FaCalendarCheck}
+                title="Progress Insights"
+                description="Understand your child's growth and developmental stages."
+              />
+            </div>
           </div>
         </section>
 
         {/* Personalized Section */}
         {_user && (
           <section 
-            className="container mx-auto px-4 py-16 bg-white" 
+            className="relative py-24 bg-gradient-to-br from-primary-50 to-white overflow-hidden" 
             aria-label="Personalized Milestone Overview"
           >
-            <MilestoneOverview />
+            <div className="absolute inset-0 bg-gradient-waves opacity-20" />
+            <div className="container relative mx-auto px-4">
+              <MilestoneOverview />
+            </div>
           </section>
         )}
 
         {/* Call to Action */}
         <section 
-          className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16" 
+          className="relative py-24 overflow-hidden bg-gradient-to-r from-primary-600 to-primary-700" 
           aria-labelledby="cta-heading"
         >
-          <div className="container mx-auto px-4 text-center">
+          <div className="absolute inset-0 bg-gradient-waves opacity-10" />
+          <div className="container relative mx-auto px-4 text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
               className="max-w-3xl mx-auto"
             >
+              <span className="inline-block px-4 py-2 rounded-full bg-white/10 text-white text-sm font-semibold mb-6">
+                Join Our Community
+              </span>
               <h2 
                 id="cta-heading" 
-                className="text-4xl font-heading font-bold mb-6"
+                className="text-4xl font-heading font-bold mb-6 text-white"
               >
                 Your Fatherhood Journey Matters
               </h2>
@@ -204,9 +235,10 @@ export default function Home() {
                 <SignInButton>
                   <Button 
                     size="lg" 
-                    className="bg-white text-primary-600 hover:bg-primary-50 shadow-lg hover:shadow-xl transition-all"
+                    className="bg-white text-primary-600 hover:bg-primary-50 shadow-lg hover:shadow-xl transition-all group"
                   >
-                    Join Now
+                    Join Now{' '}
+                    <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
                   </Button>
                 </SignInButton>
               )}
