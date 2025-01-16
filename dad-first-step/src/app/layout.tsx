@@ -1,28 +1,34 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { RootProvider } from '@/components/providers/RootProvider'
+import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { Toaster } from '@/components/ui/Sonner'
+import { APP_NAME, APP_DESCRIPTION } from './constants'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Dad's First Step",
-  description: 'Your companion in the journey of fatherhood',
+  title: APP_NAME,
+  description: APP_DESCRIPTION,
 }
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 text-gray-900 antialiased`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <RootProvider>
-            {children}
-          </RootProvider>
-        </div>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )

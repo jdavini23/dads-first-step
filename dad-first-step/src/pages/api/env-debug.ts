@@ -1,40 +1,33 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Get all environment variables
-  const envVars = process.env
+interface EnvironmentVars {
+  environment: string;
+  firebaseVars: Record<string, string | undefined>;
+  allPublicVars: Record<string, string | undefined>;
+  rawEnvContent: Record<string, string | undefined>;
+}
 
-  // Create a debug object
-  const debugInfo = {
-    environment: process.env.NODE_ENV,
-    firebaseVars: {} as Record<string, any>,
-    allPublicVars: {} as Record<string, any>,
-    rawEnvContent: {} as Record<string, any>
-  }
+interface EnvDebugResponse {
+  success: boolean;
+  debug: EnvironmentVars;
+}
 
-  // Collect Firebase-specific variables
-  Object.keys(envVars).forEach(key => {
-    if (key.startsWith('NEXT_PUBLIC_FIREBASE_')) {
-      debugInfo.firebaseVars[key] = {
-        value: envVars[key],
-        length: envVars[key]?.length || 0,
-        type: typeof envVars[key],
-        // Convert to array of character codes to check for hidden chars
-        charCodes: Array.from(envVars[key] || '').map(c => c.charCodeAt(0))
-      }
-    }
-  })
+export default function handler(req: NextApiRequest, res: NextApiResponse<EnvDebugResponse>) {
+  const debug: EnvironmentVars = {
+    environment: process.env.NODE_ENV || 'development',
+    firebaseVars: {
+      NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    },
+    allPublicVars: Object.entries(process.env)
+      .filter(([key]) => key.startsWith('NEXT_PUBLIC_'))
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
+    rawEnvContent: process.env,
+  };
 
-  // Collect all public variables
-  Object.keys(envVars).forEach(key => {
-    if (key.startsWith('NEXT_PUBLIC_')) {
-      debugInfo.allPublicVars[key] = envVars[key]
-    }
-  })
-
-  // Return debug information
   res.status(200).json({
     success: true,
-    debug: debugInfo
-  })
+    debug,
+  });
 }

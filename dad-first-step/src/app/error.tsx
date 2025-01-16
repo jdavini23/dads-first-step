@@ -1,75 +1,58 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/Button';
 
 export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error('Application error:', error)
-  }, [error])
-
-  const handleRetry = () => {
-    // First try to reset the error boundary
-    try {
-      reset()
-    } catch {
-      // If reset fails, try to reload the page
-      window.location.reload()
-    }
-  }
-
-  const handleGoHome = () => {
-    router.push('/')
-  }
+    console.error('Unhandled error:', error);
+  }, [error]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8 text-center">
-        <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Oops! Something went wrong</h1>
-          <p className="text-lg text-gray-600 mb-8">
-            {error.message || 'An unexpected error occurred'}
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          <button
-            onClick={handleRetry}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4">
+      <div className="max-w-md w-full bg-white shadow-lg rounded-xl p-8 text-center">
+        <h2 className="text-3xl font-bold text-red-600 mb-4">Something Went Wrong</h2>
+        <p className="text-gray-700 mb-6">
+          We encountered an unexpected error. Don't worry, we're on it!
+        </p>
+        
+        <div className="flex flex-col space-y-4">
+          <Button 
+            variant="default" 
+            onClick={() => reset()}
+            className="w-full"
           >
-            Try again
-          </button>
+            Try Again
+          </Button>
           
-          <button
-            onClick={handleGoHome}
-            className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          <Button 
+            variant="outline" 
+            onClick={() => router.push('/')}
+            className="w-full"
           >
-            Go back home
-          </button>
+            Go to Home
+          </Button>
         </div>
 
         {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 text-left">
-            <details className="bg-gray-100 p-4 rounded-lg">
-              <summary className="text-sm font-medium text-gray-900 cursor-pointer">
-                Error details
-              </summary>
-              <pre className="mt-2 text-xs text-gray-600 overflow-auto">
-                {error.stack}
-              </pre>
-            </details>
+          <div className="mt-6 text-left bg-gray-100 p-4 rounded-md">
+            <h3 className="font-semibold text-sm mb-2">Error Details:</h3>
+            <pre className="text-xs text-gray-700 overflow-x-auto">
+              {error.message}
+            </pre>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

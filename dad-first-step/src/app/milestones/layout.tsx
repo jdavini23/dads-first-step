@@ -1,20 +1,23 @@
-import { Metadata } from 'next'
+import React from 'react';
+import { APP_NAME } from '../constants';
+import { MilestoneHeader } from '@/components/milestones/MilestoneHeader';
 
-export const metadata: Metadata = {
-  title: 'Milestones | Dad\'s First Step',
-  description: 'Track and celebrate your baby\'s important milestones',
-}
+export const metadata = {
+  title: `${APP_NAME} - Milestones`,
+  description: "Track and celebrate your baby's important milestones",
+};
 
 export default function MilestonesLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 text-gray-900 antialiased">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col min-h-screen">
+      <MilestoneHeader />
+      <main className="flex-grow container mx-auto px-4 py-8">
         {children}
-      </div>
+      </main>
     </div>
-  )
+  );
 }

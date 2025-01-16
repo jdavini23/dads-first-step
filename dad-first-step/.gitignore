@@ -28,14 +28,36 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
+# secrets and sensitive information
+*.secret
+*.key
+*.pem
+.env*
+!.env.example
 
-# vercel
-.vercel
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Logs
+logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# Security and sensitive configuration
+secrets/
+*.credentials
+.secrets/

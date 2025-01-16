@@ -1,114 +1,129 @@
-'use client'
-
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { format } from 'date-fns'
-import { IconType } from 'react-icons'
+import React, { useState, FormEvent } from 'react';
+import { Button } from '@/components/ui/Button';
+import { Dialog } from '@/components/ui/Dialog';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import { Select } from '@/components/ui/Select';
+import { useMilestoneStore } from '@/stores/milestoneStore';
+import { useUserStore } from '@/stores/userStore';
+import { MilestoneType, MilestoneDifficulty, UserMilestone, MilestoneCategory } from '@/types/milestone';
 
 interface MilestoneDialogProps {
-  isOpen: boolean
-  onClose: () => void
-  onSave: (date: Date, notes: string) => void
-  title: string
-  icon: IconType
-  expectedAge: string
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export const MilestoneDialog = ({
-  isOpen,
-  onClose,
-  onSave,
-  title,
-  icon: Icon,
-  expectedAge,
-}: MilestoneDialogProps) => {
-  const [date, setDate] = useState<Date>(new Date())
-  const [notes, setNotes] = useState('')
+export const MilestoneDialog: React.FC<MilestoneDialogProps> = ({ isOpen, onClose }) => {
+  const { addMilestone } = useMilestoneStore();
+  const { _user } = useUserStore();
+  
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [type, setType] = useState<MilestoneType>('COGNITIVE' as MilestoneType);
+  const [difficulty, setDifficulty] = useState<MilestoneDifficulty>('MEDIUM' as MilestoneDifficulty);
+  const [date, setDate] = useState<Date>(new Date());
+  const [category, setCategory] = useState<MilestoneCategory>('CUSTOM' as MilestoneCategory);
 
-  const handleSave = () => {
-    onSave(date, notes)
-    setNotes('')
-    onClose()
-  }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const newMilestone: UserMilestone = {
+      id: crypto.randomUUID(), // Generate a unique ID
+      userId: _user?.id || '', // Add userId from global _user
+      title,
+      description,
+      type,
+      difficulty,
+      date,
+      completed: false,
+      category
+    };
+
+    addMilestone(newMilestone);
+    onClose();
+  };
+
+  const handleReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setTitle('');
+    setDescription('');
+    setType('COGNITIVE' as MilestoneType);
+    setDifficulty('MEDIUM' as MilestoneDifficulty);
+    setDate(new Date());
+    setCategory('CUSTOM' as MilestoneCategory);
+  };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={onClose}
-          />
+    <Dialog isOpen={isOpen} onClose={onClose}>
+      <form onSubmit={handleSubmit}>
+        <div className="space-y-4">
+          <div>
+            <Label>Milestone Title</Label>
+            <Input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter milestone title"
+              required
+            />
+          </div>
 
-          {/* Dialog */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          >
-            <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
-              {/* Header */}
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="bg-blue-100 p-3 rounded-full">
-                  <Icon className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold">{title}</h2>
-                  <p className="text-gray-500">Expected: {expectedAge}</p>
-                </div>
-              </div>
+          <div>
+            <Label>Description</Label>
+            <Input
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe the milestone"
+            />
+          </div>
 
-              {/* Form */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    When did it happen?
-                  </label>
-                  <input
-                    type="date"
-                    value={format(date, 'yyyy-MM-dd')}
-                    onChange={(e) => setDate(new Date(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Add some notes
-                  </label>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="What made this moment special?"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-32 resize-none"
-                  />
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex justify-end space-x-3 mt-6">
-                <button
-                  onClick={onClose}
-                  className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Save Milestone
-                </button>
-              </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Type</Label>
+              <Select
+                value={type}
+                onChange={(e) => setType(e.target.value as MilestoneType)}
+              >
+                <option value="COGNITIVE">Cognitive</option>
+                <option value="PHYSICAL">Physical</option>
+                <option value="SOCIAL">Social</option>
+                <option value="EMOTIONAL">Emotional</option>
+              </Select>
             </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
-  )
-}
+
+            <div>
+              <Label>Difficulty</Label>
+              <Select
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value as MilestoneDifficulty)}
+              >
+                <option value="EASY">Easy</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HARD">Hard</option>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <Label>Date</Label>
+            <Input
+              type="date"
+              value={date.toISOString().split('T')[0]}
+              onChange={(e) => setDate(new Date(e.target.value))}
+            />
+          </div>
+
+          <div className="flex justify-between">
+            <Button type="submit" variant="default">
+              Add Milestone
+            </Button>
+            <Button type="button" variant="outline" onClick={handleReset}>
+              Reset
+            </Button>
+          </div>
+        </div>
+      </form>
+    </Dialog>
+  );
+};
