@@ -73,7 +73,7 @@ export function MilestoneOverview() {
               <h4 className="font-medium">{milestone.title}</h4>
               <p className="text-sm text-gray-600">{milestone.description}</p>
             </div>
-            <Link href={`/milestones/${milestone.id}` as RouteString}>
+            <Link href={`/milestones/${milestone.id}`}>
               <Button variant="outline">View Details</Button>
             </Link>
           </div>
