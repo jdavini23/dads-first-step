@@ -1,21 +1,50 @@
 import React from 'react';
+import { UrlObject } from 'url';
+import type { LinkProps } from 'next/link';
 
+/**
+ * Centralized route management for the application
+ * Provides type-safe routing with a single source of truth
+ */
 export const Routes = {
-  home: '/',
-  about: '/about',
-  features: '/features',
-  resources: '/resources',
-  milestones: '/milestones',
-  testimonials: '/testimonials',
-  contact: '/contact',
-  signUp: '/sign-up',
-  milestonesAdd: '/milestones/add',
-  profile: '/profile',
-  auth: '/auth',
+  HOME: '/',
+  ABOUT: '/about',
+  FEATURES: '/features',
+  RESOURCES: '/resources',
+  MILESTONES: '/milestones',
+  MILESTONES_ADD: '/milestones/add',
+  TESTIMONIALS: '/testimonials',
+  CONTACT: '/contact',
+  SIGN_UP: '/sign-up',
+  PROFILE: '/profile',
+  AUTH: '/auth',
 } as const;
 
-export type RouteKey = keyof typeof Routes;
-export type RouteValue = (typeof Routes)[RouteKey];
+/**
+ * Type representing valid route keys
+ */
+export type Route = keyof typeof Routes;
+
+/**
+ * Type representing route values
+ */
+export type RouteValue = (typeof Routes)[Route];
+
+/**
+ * Get the path for a given route
+ * @param route - The route key
+ * @returns The corresponding route path
+ */
+export function getRoutePath(route: Route): RouteValue {
+  return Routes[route];
+}
+
+// Extend RouteValue to include Next.js routing types
+export type ExtendedRouteValue =
+  | RouteValue
+  | UrlObject
+  | { pathname: RouteValue }
+  | { href: RouteValue };
 
 // Type for route parameters if needed
 export interface RouteParams {
@@ -23,10 +52,39 @@ export interface RouteParams {
 }
 
 // Helper function to create type-safe routes with optional params
-export function createRoute(route: RouteValue, params?: RouteParams): string {
-  let path = route;
+export function createRoute(route: ExtendedRouteValue, params?: RouteParams): RouteValue {
+  // Ensure route is a string before manipulation
+  const routeStr =
+    typeof route === 'string'
+      ? route
+      : typeof route === 'object' && 'pathname' in route
+        ? route.pathname
+        : typeof route === 'object' && 'href' in route
+          ? route.href
+          : '';
+
+  let path = routeStr as RouteValue;
   Object.entries(params || {}).forEach(([key, value]) => {
-    path = path.replace(`:${key}`, String(value));
+    path = path.replace(`:${key}`, String(value)) as RouteValue;
   });
   return path;
+}
+
+// Type guard to check if a route is valid
+export function isValidRoute(route: string): route is Route {
+  return Object.values(Routes).includes(route as RouteValue);
+}
+
+// Utility to convert a route to a valid href
+export function asHref(route: ExtendedRouteValue): RouteValue {
+  if (typeof route === 'string' && isValidRoute(route)) {
+    return route;
+  }
+  if (typeof route === 'object' && 'pathname' in route) {
+    return route.pathname as RouteValue;
+  }
+  if (typeof route === 'object' && 'href' in route) {
+    return route.href as RouteValue;
+  }
+  throw new Error(`Invalid route: ${JSON.stringify(route)}`);
 }

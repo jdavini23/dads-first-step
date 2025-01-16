@@ -1,10 +1,10 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { 
-  getFirestore, 
-  initializeFirestore, 
-  CACHE_SIZE_UNLIMITED, 
-  connectFirestoreEmulator 
+import {
+  getFirestore,
+  initializeFirestore,
+  CACHE_SIZE_UNLIMITED,
+  connectFirestoreEmulator,
 } from 'firebase/firestore';
 import { toast } from 'sonner';
 
@@ -22,13 +22,11 @@ const firebaseConfig = {
 export const firebaseApp = (() => {
   try {
     // Check if Firebase is already initialized
-    const app = getApps().length === 0 
-      ? initializeApp(firebaseConfig) 
-      : getApp();
+    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
     const auth = getAuth(app);
     const db = initializeFirestore(app, {
-      cacheSizeBytes: CACHE_SIZE_UNLIMITED
+      cacheSizeBytes: CACHE_SIZE_UNLIMITED,
     });
 
     // Connect to emulators in development

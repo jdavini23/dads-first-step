@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Routes } from '@/types/routes';
+import { TypedLink } from '@/components/common/TypedLink';
 import { AppLink } from '@/components/common/AppLink';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,8 +21,7 @@ const IllustrationLoader = () => (
 // Error Boundary Implementation
 interface ErrorBoundaryProps {
   children: React.ReactNode;
-  FallbackComponent: React.ComponentType<{ error: Error }>;
-  error: Error;
+  fallback: React.ReactNode;
 }
 
 interface ErrorBoundaryState {
@@ -45,7 +45,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   render() {
     if (this.state.hasError) {
-      return <this.props.FallbackComponent error={this.state.error!} />;
+      return this.props.fallback;
     }
     return this.props.children;
   }
@@ -104,7 +104,7 @@ export default function Home() {
   }
 
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
+    <ErrorBoundary fallback={<ErrorFallback error={new Error('Unknown error')} />}>
       <main className="min-h-screen font-body">
         {/* Hero Section */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-accent-50">
@@ -155,8 +155,8 @@ export default function Home() {
                     </Button>
                   </SignInButton>
                 )}
-                <AppLink
-                  href={Routes.about}
+                <TypedLink
+                  route="ABOUT"
                   aria-label="Learn More About Dad's First Step"
                 >
                   <Button
@@ -166,7 +166,7 @@ export default function Home() {
                   >
                     Learn More
                   </Button>
-                </AppLink>
+                </TypedLink>
               </div>
             </motion.div>
 

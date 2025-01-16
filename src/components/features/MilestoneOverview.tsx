@@ -5,10 +5,11 @@ import { useMilestoneStore } from '@/stores/milestoneStore';
 import { useAuthStore } from '@/stores/authStore';
 import { getMilestonesForUser } from '@/services/milestoneService';
 import { Button } from '@/components/ui/Button';
-import { Routes, RouteString } from '@/types/routes';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { asHref } from '@/utils/asHref';
+import { Routes } from '@/types/routes';
+import { TypedLink } from '@/components/common/TypedLink';
+import { useNavigation } from '@/utils/navigation';
+import { useRouter } from 'next/navigation';
+import asHref from '@/utils/asHref';
 
 export function MilestoneOverview() {
   const { _user } = useAuthStore();
@@ -70,9 +71,9 @@ export function MilestoneOverview() {
               <h4 className="font-medium">{milestone.title}</h4>
               <p className="text-sm text-gray-600">{milestone.description}</p>
             </div>
-            <Link href={{ pathname: '/milestones/[id]', query: { id: milestone.id } }}>
+            <TypedLink href={{ pathname: '/milestones/[id]', query: { id: milestone.id } }}>
               <Button variant="outline">View Details</Button>
-            </Link>
+            </TypedLink>
           </div>
         ))}
 
@@ -82,9 +83,9 @@ export function MilestoneOverview() {
       </div>
 
       <div className="text-center mt-6">
-        <Link href={Routes.milestones}>
+        <TypedLink href={Routes.milestones}>
           <Button>View All Milestones</Button>
-        </Link>
+        </TypedLink>
       </div>
     </div>
   );

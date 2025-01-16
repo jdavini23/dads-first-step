@@ -7,7 +7,6 @@ import {
   deleteDoc,
   query,
   where,
-  serverTimestamp,
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getApp } from 'firebase/app';
@@ -66,8 +65,8 @@ export const addUserMilestone = async (milestone: Milestone): Promise<UserMilest
   const userMilestone: Omit<UserMilestone, 'id'> = {
     ...milestone,
     userId: auth.currentUser?.uid || '', // Ensure userId is set
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   const docRef = await addDoc(milestoneRef, userMilestone);
@@ -84,9 +83,10 @@ export const updateUserMilestone = async (
 ): Promise<void> => {
   const { db } = getFirebaseServices();
   const milestoneRef = doc(db, MILESTONES_COLLECTION, milestoneId);
+
   await updateDoc(milestoneRef, {
     ...updates,
-    updatedAt: serverTimestamp(),
+    updatedAt: new Date().toISOString(),
   });
 };
 
@@ -197,8 +197,8 @@ export const addDefaultMilestones = async (userId: string): Promise<string[]> =>
   const milestonePromises = defaultMilestones.map(async (milestone) => {
     const validatedMilestone = {
       ...milestone,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     const docRef = await addDoc(collection(db, MILESTONES_COLLECTION), validatedMilestone);

@@ -15,13 +15,17 @@ export function AuthInitializer() {
       return () => {};
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setInitialized();
-    }, (error) => {
-      console.error('Auth state change error:', error);
-      setInitialized();
-    });
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (user) => {
+        setUser(user);
+        setInitialized();
+      },
+      (error) => {
+        console.error('Auth state change error:', error);
+        setInitialized();
+      }
+    );
 
     return () => unsubscribe();
   }, [setUser, setInitialized]);

@@ -1,5 +1,3 @@
-import { RouteString } from '@/types/routes';
+import { asHref } from '@/types/routes';
 
-export function asHref(route: RouteString): string {
-  return route;
-}
+export default asHref;

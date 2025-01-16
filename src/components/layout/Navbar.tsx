@@ -1,15 +1,16 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { Routes, Route, isValidRoute } from '@/types/routes';
+import { TypedLink } from '@/components/common/TypedLink';
+import { useNavigation } from '@/utils/navigation';
 import { useState, useEffect, useRef } from 'react';
-import { Routes } from '@/types/routes';
-import { AppLink } from '@/components/common/AppLink';
+import asHref from '@/utils/asHref';
 import { Button } from '@/components/ui/Button';
 import Image from 'next/image';
 import { HiOutlineSearch, HiOutlineMenu, HiOutlineX, HiOutlineChevronDown } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const NavLinks = [
+const navLinks = [
   {
     label: 'Home',
     href: Routes.home,
@@ -40,7 +41,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const pathname = usePathname();
+  const pathname = useNavigation();
   const navRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns and mobile menu when clicking outside
@@ -72,14 +73,16 @@ export function Navbar() {
 
   const renderDropdownLinks = (links: { label: string; href: string }[]) => (
     <div className="group-hover:block hidden absolute top-full left-0 min-w-[200px] bg-white shadow-lg rounded-lg border border-neutral-100 py-2 z-50">
-      {links.map((child) => (
-        <AppLink
-          key={child.href}
-          href={child.href}
-          className="block px-4 py-2 hover:bg-neutral-50 text-neutral-700 hover:text-primary-600 transition-colors"
-        >
-          {child.label}
-        </AppLink>
+      {links.map((child, index) => (
+        isValidRoute(child.href) && (
+          <TypedLink
+            key={`${child.href}-${index}`}
+            href={child.href}
+            className="block px-4 py-2 hover:bg-neutral-50 text-neutral-700 hover:text-primary-600 transition-colors"
+          >
+            {child.label}
+          </TypedLink>
+        )
       ))}
     </div>
   );
@@ -91,24 +94,24 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between relative">
         {/* Logo */}
-        <AppLink href={Routes.home} className="flex items-center space-x-2 group">
+        <TypedLink href={Routes.home} className="flex items-center space-x-2 group">
           <Image
             src="/logo.svg"
             alt="Dad's First Step Logo"
             width={40}
             height={40}
-            className="h-10 w-10 group-hover:rotate-6 transition-transform"
+            className="group-hover:scale-110 transition-transform"
           />
           <span className="text-xl font-bold text-primary-700 group-hover:text-primary-600 transition-colors">
             Dad's First Step
           </span>
-        </AppLink>
+        </TypedLink>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
-          {NavLinks.map((link) => (
+          {navLinks.map((link) => (
             <div key={link.label} className="relative group">
-              <AppLink
+              <TypedLink
                 href={link.href}
                 className="flex items-center text-neutral-700 hover:text-primary-600 transition-colors"
               >
@@ -116,7 +119,7 @@ export function Navbar() {
                 {link.dropdown && (
                   <HiOutlineChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
                 )}
-              </AppLink>
+              </TypedLink>
               {link.dropdown && link.children && renderDropdownLinks(link.children)}
             </div>
           ))}
@@ -176,13 +179,13 @@ export function Navbar() {
             className="md:hidden fixed inset-0 bg-white/95 z-40 pt-20 px-6 overflow-y-auto"
           >
             <div className="flex flex-col space-y-6">
-              {NavLinks.map((link) => (
+              {navLinks.map((link) => (
                 <div key={link.label} className="border-b border-neutral-200 pb-2">
                   <div
                     onClick={() => link.dropdown && toggleDropdown(link.label)}
                     className="flex items-center justify-between text-2xl text-neutral-800 hover:text-primary-600 transition-colors cursor-pointer"
                   >
-                    <AppLink href={link.href}>{link.label}</AppLink>
+                    <TypedLink href={link.href}>{link.label}</TypedLink>
                     {link.dropdown && (
                       <HiOutlineChevronDown
                         className={`h-6 w-6 transition-transform ${
@@ -198,14 +201,16 @@ export function Navbar() {
                       exit={{ opacity: 0, height: 0 }}
                       className="pl-4 mt-2 space-y-2"
                     >
-                      {link.children.map((child) => (
-                        <AppLink
-                          key={child.href}
-                          href={child.href}
-                          className="block text-lg text-neutral-700 hover:text-primary-600 transition-colors"
-                        >
-                          {child.label}
-                        </AppLink>
+                      {link.children && link.children.map((child, childIndex) => (
+                        isValidRoute(child.href) && (
+                          <TypedLink
+                            key={`mobile-${child.href}-${childIndex}`}
+                            href={child.href}
+                            className="block text-lg text-neutral-700 hover:text-primary-600 transition-colors"
+                          >
+                            {child.label}
+                          </TypedLink>
+                        )
                       ))}
                     </motion.div>
                   )}
