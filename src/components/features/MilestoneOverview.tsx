@@ -74,7 +74,7 @@ export function MilestoneOverview() {
               <h4 className="font-medium">{milestone.title}</h4>
               <p className="text-sm text-gray-600">{milestone.description}</p>
             </div>
-            <Link href={asHref(`/milestones/${milestone.id}`)}>
+            <Link href={{ pathname: '/milestones/[id]', query: { id: milestone.id } }}>
               <Button variant="outline">View Details</Button>
             </Link>
           </div>
