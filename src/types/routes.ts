@@ -7,8 +7,13 @@ export const Routes = {
   milestones: '/milestones' as Route,
   milestonesAdd: '/milestones/add' as Route,
   about: '/about' as Route,
+  features: '/features' as Route,
+  resources: '/resources' as Route,
+  testimonials: '/testimonials' as Route,
+  contact: '/contact' as Route,
   profile: '/profile' as Route,
-  auth: '/auth' as Route
+  auth: '/auth' as Route,
+  signUp: '/signup' as Route
 } as const;
 
 export type RouteKey = keyof typeof Routes;

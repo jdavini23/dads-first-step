@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Montserrat } from 'next/font/google'
 import './globals.css'
+import { Navbar } from '@/components/layout/Navbar'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { Toaster } from '@/components/ui/Sonner'
 import { APP_NAME, APP_DESCRIPTION } from './constants'
@@ -27,15 +28,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${montserrat.variable} font-body antialiased`}>
+      <body className={`${inter.variable} ${montserrat.variable} font-body antialiased pt-20`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <Navbar />
+          <main>
+            {children}
+            <Toaster />
+          </main>
         </ThemeProvider>
       </body>
     </html>
