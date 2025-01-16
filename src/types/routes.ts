@@ -13,11 +13,13 @@ export const Routes = {
 export type RouteKey = keyof typeof Routes;
 export type RouteValue = (typeof Routes)[RouteKey];
 
+// Type alias for route strings
+export type RouteString = RouteValue;
+
 // Type for Next.js Link href prop
 export type LinkRoute = 
   | Route 
   | UrlObject 
-  | string 
   | { 
       pathname: string; 
       query?: { [key: string]: string | number | string[] | undefined };
