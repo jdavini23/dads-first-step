@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion/dist/es/index';
 import { Button } from '@/components/ui/Button';
 
 export default function AboutPage() {

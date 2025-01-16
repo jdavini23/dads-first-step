@@ -3,7 +3,7 @@
 import React, { Suspense, memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion/dist/es/index';
 import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/stores/authStore';
 import { SignInButton } from '@/components/auth/SignInButton';

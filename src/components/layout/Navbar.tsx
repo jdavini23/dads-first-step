@@ -13,7 +13,7 @@ import {
   HiOutlineX, 
   HiOutlineChevronDown 
 } from 'react-icons/hi';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion/dist/es/index';
 
 const NavLinks = [
   { 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion/dist/es/index';
 import { IconType } from 'react-icons';
 import { format } from 'date-fns';
 import { UserMilestone } from '@/types/milestone';
