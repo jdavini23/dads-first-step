@@ -42,9 +42,16 @@ export function getRoutePath(route: Route): RouteValue {
 // Extend RouteValue to include Next.js routing types
 export type ExtendedRouteValue =
   | RouteValue
-  | UrlObject
-  | { pathname: RouteValue }
-  | { href: RouteValue };
+  | { 
+      pathname: RouteValue; 
+      query?: Record<string, string | number | string[]>; 
+      hash?: string 
+    }
+  | { 
+      href: RouteValue; 
+      query?: Record<string, string | number | string[]>; 
+      hash?: string 
+    };
 
 // Type for route parameters if needed
 export interface RouteParams {
@@ -76,18 +83,30 @@ export function isValidRoute(route: string): route is Route {
 }
 
 // Utility to convert a route to a valid href
-export function asHref(route: ExtendedRouteValue): string {
+export function asHref(
+  route: ExtendedRouteValue, 
+  params?: { [key: string]: string | number }
+): string | { 
+  pathname: string; 
+  query?: Record<string, string | number | string[]>; 
+  hash?: string 
+} {
   // If it's already a string, return it
   if (typeof route === 'string') return route;
   
-  // If it's an object with pathname, return the pathname
-  if ('pathname' in route) return route.pathname;
+  // If it's an object with pathname, return the object
+  if ('pathname' in route) return {
+    pathname: route.pathname,
+    query: params || route.query,
+    hash: route.hash
+  };
   
-  // If it's an object with href, return the href
-  if ('href' in route) return route.href;
-  
-  // If it's a UrlObject, convert to string
-  if (typeof route === 'object' && 'path' in route) return route.path as string;
+  // If it's an object with href, return the object
+  if ('href' in route) return {
+    pathname: route.href,
+    query: params || route.query,
+    hash: route.hash
+  };
   
   // Fallback to home route
   return Routes.HOME;

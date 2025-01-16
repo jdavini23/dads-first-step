@@ -11,6 +11,7 @@ interface TypedLinkProps extends Omit<LinkProps, 'href'> {
   children: React.ReactNode;
   className?: string;
   target?: '_blank' | '_self' | '_parent' | '_top';
+  params?: { [key: string]: string };
 }
 
 /**
@@ -22,6 +23,7 @@ export const TypedLink = ({
   children, 
   className,
   target = '_self',
+  params,
   ...props
 }: TypedLinkProps) => {
   // Validate that only one of route or href is provided
@@ -31,7 +33,7 @@ export const TypedLink = ({
 
   // Prioritize route, then href, fallback to home route
   const linkHref = 
-    (route ? asHref(Routes[route]) : 
+    (route ? asHref(Routes[route], params) : 
     (href ? asHref(href) : asHref(Routes.HOME)));
 
   return (
