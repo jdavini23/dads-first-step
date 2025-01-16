@@ -3,10 +3,13 @@ import React from 'react';
 export default function EnvTestPage() {
   const publicEnvVars = Object.entries(process.env)
     .filter(([key]) => key.startsWith('NEXT_PUBLIC_'))
-    .reduce((acc, [key, value]) => {
-      acc[key] = value;
-      return acc;
-    }, {} as Record<string, string | undefined>);
+    .reduce(
+      (acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      },
+      {} as Record<string, string | undefined>
+    );
 
   return (
     <div className="p-4 max-w-2xl mx-auto">

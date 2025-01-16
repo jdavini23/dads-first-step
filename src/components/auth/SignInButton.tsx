@@ -36,15 +36,12 @@ export const SignInButton = ({ children, className }: SignInButtonProps) => {
           <FaGoogle className="mr-2" />
           {children.props.children}
         </>
-      )
+      ),
     });
   }
 
   return (
-    <button 
-      onClick={handleSignIn} 
-      className={`flex items-center justify-center ${className}`}
-    >
+    <button onClick={handleSignIn} className={`flex items-center justify-center ${className}`}>
       <FaGoogle className="mr-2" />
       {children || 'Sign in with Google'}
     </button>

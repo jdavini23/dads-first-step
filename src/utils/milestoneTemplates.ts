@@ -1,6 +1,11 @@
 import { IconType } from 'react-icons';
 import { FaSmile, FaChild, FaBook, FaWalking, FaMusic } from 'react-icons/fa';
-import { MilestoneCategory, MilestoneDifficulty, UserMilestone, MilestoneType } from '@/types/milestone';
+import {
+  MilestoneCategory,
+  MilestoneDifficulty,
+  UserMilestone,
+  MilestoneType,
+} from '@/types/milestone';
 
 interface MilestoneTemplate {
   id: string;
@@ -20,7 +25,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
   {
     id: '1',
     title: 'First Smile',
-    description: 'Your baby\'s first social smile, typically in response to your face or voice',
+    description: "Your baby's first social smile, typically in response to your face or voice",
     type: MilestoneType.SOCIAL,
     category: MilestoneCategory.SOCIAL,
     minAge: 1,
@@ -28,7 +33,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
     difficulty: MilestoneDifficulty.EASY,
     icon: FaSmile,
     skills: ['Social Interaction', 'Emotional Development'],
-    resources: ['Understanding baby smiles', 'Social development tips']
+    resources: ['Understanding baby smiles', 'Social development tips'],
   },
   {
     id: '2',
@@ -41,7 +46,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
     difficulty: MilestoneDifficulty.MEDIUM,
     icon: FaChild,
     skills: ['Gross Motor Skills', 'Core Strength'],
-    resources: ['Tummy time exercises', 'Rolling over safety']
+    resources: ['Tummy time exercises', 'Rolling over safety'],
   },
   {
     id: '3',
@@ -54,7 +59,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
     difficulty: MilestoneDifficulty.MEDIUM,
     icon: FaBook,
     skills: ['Language Development', 'Communication'],
-    resources: ['Language development activities', 'Speech milestones']
+    resources: ['Language development activities', 'Speech milestones'],
   },
   {
     id: '4',
@@ -67,7 +72,7 @@ export const defaultMilestones: MilestoneTemplate[] = [
     difficulty: MilestoneDifficulty.MEDIUM,
     icon: FaWalking,
     skills: ['Gross Motor Skills', 'Balance', 'Coordination'],
-    resources: ['Walking safety tips', 'Encouraging independent walking']
+    resources: ['Walking safety tips', 'Encouraging independent walking'],
   },
   {
     id: '5',
@@ -80,8 +85,8 @@ export const defaultMilestones: MilestoneTemplate[] = [
     difficulty: MilestoneDifficulty.EASY,
     icon: FaMusic,
     skills: ['Musical Intelligence', 'Rhythm Recognition', 'Motor Skills'],
-    resources: ['Baby music activities', 'Musical development tips']
-  }
+    resources: ['Baby music activities', 'Musical development tips'],
+  },
 ];
 
 export function convertTemplateToMilestone(

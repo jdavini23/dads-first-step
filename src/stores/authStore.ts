@@ -9,6 +9,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   initialized: boolean;
   setUser: (user: User | null) => void;
+  setInitialized: () => void;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -20,28 +21,26 @@ const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       initialized: false,
       setUser: (user: User | null) => {
-        if (user) {
-          set({
-            _user: user,
-            isAuthenticated: true,
-            loading: false,
-            error: null,
-            initialized: true,
-          });
-        } else {
-          set({
-            _user: null,
-            isAuthenticated: false,
-            loading: false,
-            error: null,
-            initialized: true,
-          });
-        }
+        set({
+          _user: user,
+          isAuthenticated: !!user,
+          loading: false,
+          error: null,
+          initialized: true,
+        });
+      },
+      setInitialized: () => {
+        set((state) => ({
+          ...state,
+          loading: false,
+          initialized: true,
+        }));
       },
     }),
     {
       name: 'auth-storage',
       partialize: (state) => ({
+        _user: state._user,
         isAuthenticated: state.isAuthenticated,
         initialized: state.initialized,
       }),

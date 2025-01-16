@@ -16,11 +16,13 @@ interface UserState {
 export const useUserStore = create<UserState>()(
   immer((set) => ({
     _user: null,
-    setUser: (user) => set((state) => {
-      state._user = user;
-    }),
-    clearUser: () => set((state) => {
-      state._user = null;
-    }),
+    setUser: (user) =>
+      set((state) => {
+        state._user = user;
+      }),
+    clearUser: () =>
+      set((state) => {
+        state._user = null;
+      }),
   }))
 );

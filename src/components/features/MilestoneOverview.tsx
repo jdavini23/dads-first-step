@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useMilestoneStore } from '@/stores/milestoneStore';
@@ -40,8 +40,8 @@ export function MilestoneOverview() {
   if (loading) return <div>Loading milestones...</div>;
   if (error) return <div>{error}</div>;
 
-  const completedMilestones = milestones.filter(m => m.completed);
-  const pendingMilestones = milestones.filter(m => !m.completed);
+  const completedMilestones = milestones.filter((m) => m.completed);
+  const pendingMilestones = milestones.filter((m) => !m.completed);
 
   return (
     <div className="space-y-6">
@@ -50,24 +50,20 @@ export function MilestoneOverview() {
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
             <h3 className="text-lg font-semibold">Completed</h3>
-            <p className="text-3xl font-bold text-green-600">
-              {completedMilestones.length}
-            </p>
+            <p className="text-3xl font-bold text-green-600">{completedMilestones.length}</p>
           </div>
           <div className="text-center">
             <h3 className="text-lg font-semibold">Pending</h3>
-            <p className="text-3xl font-bold text-blue-600">
-              {pendingMilestones.length}
-            </p>
+            <p className="text-3xl font-bold text-blue-600">{pendingMilestones.length}</p>
           </div>
         </div>
       </div>
 
       <div className="space-y-4">
         <h3 className="text-xl font-semibold">Recent Milestones</h3>
-        {pendingMilestones.slice(0, 3).map(milestone => (
-          <div 
-            key={milestone.id} 
+        {pendingMilestones.slice(0, 3).map((milestone) => (
+          <div
+            key={milestone.id}
             className="bg-gray-50 rounded-lg p-4 flex justify-between items-center"
           >
             <div>
@@ -81,9 +77,7 @@ export function MilestoneOverview() {
         ))}
 
         {pendingMilestones.length === 0 && (
-          <div className="text-center text-gray-500">
-            No pending milestones. Great job!
-          </div>
+          <div className="text-center text-gray-500">No pending milestones. Great job!</div>
         )}
       </div>
 

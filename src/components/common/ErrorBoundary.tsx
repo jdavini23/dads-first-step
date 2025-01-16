@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { ErrorInfo, ReactNode } from 'react';
 
@@ -29,11 +29,13 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return this.props.fallback || (
-        <div role="alert" className="p-4 bg-red-100 text-red-800">
-          <h2>Something went wrong.</h2>
-          <p>Please try refreshing the page or contact support.</p>
-        </div>
+      return (
+        this.props.fallback || (
+          <div role="alert" className="p-4 bg-red-100 text-red-800">
+            <h2>Something went wrong.</h2>
+            <p>Please try refreshing the page or contact support.</p>
+          </div>
+        )
       );
     }
 

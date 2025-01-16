@@ -14,7 +14,7 @@ export enum MilestoneCategory {
 
 export enum MilestoneDifficulty {
   EASY = 'EASY',
-  MEDIUM = 'MEDIUM', 
+  MEDIUM = 'MEDIUM',
   HARD = 'HARD',
 }
 
@@ -50,19 +50,20 @@ export type MilestoneFilters = {
 };
 
 export const filterMilestones = (
-  milestones: UserMilestone[], 
+  milestones: UserMilestone[],
   filters: MilestoneFilters
 ): UserMilestone[] => {
-  return milestones.filter((milestone) => 
-    (!filters.type || milestone.type === filters.type) && 
-    (!filters.category || milestone.category === filters.category) &&
-    (!filters.difficulty || milestone.difficulty === filters.difficulty) &&
-    (filters.completed === undefined || milestone.completed === filters.completed)
+  return milestones.filter(
+    (milestone) =>
+      (!filters.type || milestone.type === filters.type) &&
+      (!filters.category || milestone.category === filters.category) &&
+      (!filters.difficulty || milestone.difficulty === filters.difficulty) &&
+      (filters.completed === undefined || milestone.completed === filters.completed)
   );
 };
 
 export const createMilestone = (
-  userId: string, 
+  userId: string,
   milestone: Omit<UserMilestone, 'id'>
 ): UserMilestone => {
   return {

@@ -9,7 +9,10 @@ import {
   where,
   serverTimestamp,
 } from 'firebase/firestore';
-import { firebaseService } from '@/lib/firebaseApp';
+import { getAuth } from 'firebase/auth';
+import { getApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+
 import {
   UserMilestone,
   MilestoneCategory,
@@ -18,11 +21,23 @@ import {
   Milestone,
 } from '@/types/milestone';
 
-const { db } = firebaseService;
+// Defensive Firebase initialization
+const getFirebaseServices = () => {
+  try {
+    const app = getApp();
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    return { auth, db };
+  } catch (error) {
+    console.error('Failed to get Firebase services:', error);
+    throw new Error('Firebase services are not properly initialized');
+  }
+};
 
-export const MILESTONES_COLLECTION = 'milestones';
+const MILESTONES_COLLECTION = 'milestones';
 
 export const getMilestonesForUser = async (userId: string): Promise<UserMilestone[]> => {
+  const { db } = getFirebaseServices();
   const milestoneRef = collection(db, MILESTONES_COLLECTION);
   const q = query(milestoneRef, where('userId', '==', userId));
 
@@ -44,24 +59,22 @@ export const getMilestonesForUser = async (userId: string): Promise<UserMileston
 };
 
 export const addUserMilestone = async (milestone: Milestone): Promise<UserMilestone> => {
+  const { auth, db } = getFirebaseServices();
+
   const milestoneRef = collection(db, MILESTONES_COLLECTION);
 
   const userMilestone: Omit<UserMilestone, 'id'> = {
     ...milestone,
-    userId: firebaseService.auth.currentUser?.uid || '', // Ensure userId is set
-    completed: false,
-    progress: 0,
-    completedAt: null, // Change undefined to null
-    notes: '',
-    createdAt: '',
-    updatedAt: ''
+    userId: auth.currentUser?.uid || '', // Ensure userId is set
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
   };
 
   const docRef = await addDoc(milestoneRef, userMilestone);
 
   return {
-    ...userMilestone,
     id: docRef.id,
+    ...userMilestone,
   };
 };
 
@@ -69,6 +82,7 @@ export const updateUserMilestone = async (
   milestoneId: string,
   updates: Partial<UserMilestone>
 ): Promise<void> => {
+  const { db } = getFirebaseServices();
   const milestoneRef = doc(db, MILESTONES_COLLECTION, milestoneId);
   await updateDoc(milestoneRef, {
     ...updates,
@@ -77,6 +91,7 @@ export const updateUserMilestone = async (
 };
 
 export const deleteUserMilestone = async (milestoneId: string): Promise<void> => {
+  const { db } = getFirebaseServices();
   const milestoneRef = doc(db, MILESTONES_COLLECTION, milestoneId);
   await deleteDoc(milestoneRef);
 };
@@ -101,7 +116,7 @@ export const getMilestoneTemplates = (): UserMilestone[] => [
       'https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones.aspx',
     ],
     createdAt: '',
-    updatedAt: ''
+    updatedAt: '',
   },
   {
     id: 'template-2',
@@ -119,7 +134,7 @@ export const getMilestoneTemplates = (): UserMilestone[] => [
     date: new Date(),
     resources: ['https://www.cdc.gov/ncbddd/childdevelopment/facts.html'],
     createdAt: '',
-    updatedAt: ''
+    updatedAt: '',
   },
 ];
 
@@ -149,7 +164,7 @@ export const addDefaultMilestones = async (userId: string): Promise<string[]> =>
         'https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones.aspx',
       ],
       createdAt: '',
-      updatedAt: ''
+      updatedAt: '',
     },
     {
       userId, // Set user ID directly
@@ -166,14 +181,12 @@ export const addDefaultMilestones = async (userId: string): Promise<string[]> =>
       date: new Date(), // Add default date
       resources: ['https://www.cdc.gov/ncbddd/childdevelopment/facts.html'],
       createdAt: '',
-      updatedAt: ''
+      updatedAt: '',
     },
   ];
 
   // Ensure Firestore is initialized
-  if (!db) {
-    throw new Error('Firestore database is not initialized');
-  }
+  const { db } = getFirebaseServices();
 
   // Validate Firestore collection name
   if (!MILESTONES_COLLECTION) {
