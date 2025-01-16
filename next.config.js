@@ -1,10 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   experimental: {
-    typedRoutes: true
+    typedRoutes: true,
+    optimizePackageImports: true,
+    serverComponentsExternalPackages: ['@prisma/client']
   },
   eslint: {
     ignoreDuringBuilds: true
+  },
+  images: {
+    domains: ['firebasestorage.googleapis.com', 'lh3.googleusercontent.com'],
+    formats: ['image/avif', 'image/webp']
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
