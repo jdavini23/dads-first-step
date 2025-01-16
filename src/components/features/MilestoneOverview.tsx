@@ -5,7 +5,7 @@ import { useMilestoneStore } from '@/stores/milestoneStore';
 import { useAuthStore } from '@/stores/authStore';
 import { getMilestonesForUser } from '@/services/milestoneService';
 import { Button } from '@/components/ui/Button';
-import { Routes } from '@/types/routes';
+import { Routes, RouteString } from '@/types/routes';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
