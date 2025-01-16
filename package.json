@@ -12,7 +12,8 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,md,json}\"",
     "clean": "rimraf .next",
     "reset": "npm run clean && npm cache clean --force && npm install",
-    "export": "next export"
+    "export": "next export",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "clsx": "^2.1.1",
