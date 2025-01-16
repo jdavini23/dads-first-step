@@ -5,6 +5,7 @@ import type { UrlObject } from 'url';
 export const Routes = {
   home: '/' as Route,
   milestones: '/milestones' as Route,
+  milestonesAdd: '/milestones/add' as Route,
   about: '/about' as Route,
   profile: '/profile' as Route,
   auth: '/auth' as Route
