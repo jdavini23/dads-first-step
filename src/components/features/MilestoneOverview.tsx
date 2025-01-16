@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Routes, RouteString } from '@/types/routes';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { asHref } from '@/utils/asHref';
 
 export function MilestoneOverview() {
   const { _user } = useAuthStore();
@@ -73,7 +74,7 @@ export function MilestoneOverview() {
               <h4 className="font-medium">{milestone.title}</h4>
               <p className="text-sm text-gray-600">{milestone.description}</p>
             </div>
-            <Link href={`/milestones/${milestone.id}`}>
+            <Link href={asHref(`/milestones/${milestone.id}`)}>
               <Button variant="outline">View Details</Button>
             </Link>
           </div>
