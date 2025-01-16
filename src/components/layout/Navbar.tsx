@@ -14,26 +14,26 @@ import { SignInButton } from '@/components/auth/SignInButton';
 const navLinks = [
   {
     label: 'Home',
-    href: Routes.HOME,
+    route: 'HOME' as Route,
     dropdown: false,
   },
   {
     label: 'Features',
-    href: Routes.FEATURES,
+    route: 'FEATURES' as Route,
     dropdown: true,
     children: [
-      { label: 'Milestone Tracking', href: Routes.MILESTONES },
-      { label: 'Resources', href: Routes.RESOURCES },
+      { label: 'Milestone Tracking', route: 'MILESTONES' as Route },
+      { label: 'Resources', route: 'RESOURCES' as Route },
     ],
   },
   {
     label: 'Community',
-    href: Routes.ABOUT,
+    route: 'ABOUT' as Route,
     dropdown: true,
     children: [
-      { label: 'Testimonials', href: Routes.TESTIMONIALS },
-      { label: 'About', href: Routes.ABOUT },
-      { label: 'Contact', href: Routes.CONTACT },
+      { label: 'Testimonials', route: 'TESTIMONIALS' as Route },
+      { label: 'About', route: 'ABOUT' as Route },
+      { label: 'Contact', route: 'CONTACT' as Route },
     ],
   },
 ];
@@ -42,6 +42,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [hoverDropdown, setHoverDropdown] = useState<string | null>(null);
   const { pathname } = useNavigation();
   const navRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +52,7 @@ export function Navbar() {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setActiveDropdown(null);
         setIsMenuOpen(false);
+        setHoverDropdown(null);
       }
     };
 
@@ -63,6 +65,7 @@ export function Navbar() {
   // Close mobile menu when path changes
   useEffect(() => {
     setIsMenuOpen(false);
+    setHoverDropdown(null);
   }, [pathname]);
 
   useEffect(() => {
@@ -77,18 +80,20 @@ export function Navbar() {
     setActiveDropdown(activeDropdown === label ? null : label);
   };
 
-  const renderDropdownLinks = (links: { label: string; href: string }[]) => (
-    <div className="absolute top-full left-0 min-w-[200px] bg-white shadow-lg rounded-lg border border-neutral-100 py-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+  const renderDropdownLinks = (links: { label: string; route: Route }[], parentLabel: string) => (
+    <div 
+      className={`absolute top-full left-0 min-w-[200px] bg-white shadow-lg rounded-lg border border-neutral-100 py-2 z-50 transition-all duration-200 ease-in-out ${
+        hoverDropdown === parentLabel ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+      }`}
+    >
       {links.map((child, index) => (
-        isValidRoute(child.href) && (
           <TypedLink
-            key={`${child.href}-${index}`}
-            href={child.href}
+            key={`${child.route}-${index}`}
+            route={child.route}
             className="block px-4 py-2 hover:bg-neutral-50 text-neutral-700 hover:text-primary-600 transition-colors"
           >
             {child.label}
           </TypedLink>
-        )
       ))}
     </div>
   );
@@ -100,7 +105,7 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between relative">
         {/* Logo */}
-        <TypedLink href={Routes.HOME} className="flex items-center space-x-2 group">
+        <TypedLink route="HOME" className="flex items-center space-x-2 group">
           <Image
             src="/logo.svg"
             alt="Dad's First Step Logo"
@@ -116,17 +121,28 @@ export function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
-            <div key={link.label} className="relative group">
-              <TypedLink
-                href={link.href}
-                className="flex items-center text-neutral-700 hover:text-primary-600 transition-colors"
-              >
-                {link.label}
+            <div 
+              key={link.label} 
+              className="relative"
+              onMouseEnter={() => setHoverDropdown(link.label)}
+              onMouseLeave={() => setHoverDropdown(null)}
+            >
+              <div className="flex items-center text-neutral-700 hover:text-primary-600 transition-colors cursor-pointer py-3">
+                <TypedLink
+                  route={link.route}
+                  className="flex items-center"
+                >
+                  {link.label}
+                </TypedLink>
                 {link.dropdown && (
-                  <HiOutlineChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
+                  <HiOutlineChevronDown 
+                    className={`ml-1 h-4 w-4 transition-transform duration-200 ${
+                      hoverDropdown === link.label ? 'rotate-180' : ''
+                    }`}
+                  />
                 )}
-              </TypedLink>
-              {link.dropdown && link.children && renderDropdownLinks(link.children)}
+              </div>
+              {link.dropdown && link.children && renderDropdownLinks(link.children, link.label)}
             </div>
           ))}
         </div>
@@ -192,7 +208,7 @@ export function Navbar() {
                     onClick={() => link.dropdown && toggleDropdown(link.label)}
                     className="flex items-center justify-between text-2xl text-neutral-800 hover:text-primary-600 transition-colors cursor-pointer"
                   >
-                    <TypedLink href={link.href}>{link.label}</TypedLink>
+                    <TypedLink route={link.route}>{link.label}</TypedLink>
                     {link.dropdown && (
                       <HiOutlineChevronDown
                         className={`h-6 w-6 transition-transform ${
@@ -209,10 +225,10 @@ export function Navbar() {
                       className="pl-4 mt-2 space-y-2"
                     >
                       {link.children.map((child, childIndex) => (
-                        isValidRoute(child.href) && (
+                        isValidRoute(child.route) && (
                           <TypedLink
-                            key={`mobile-${child.href}-${childIndex}`}
-                            href={child.href}
+                            key={`mobile-${child.route}-${childIndex}`}
+                            route={child.route}
                             className="block text-lg text-neutral-700 hover:text-primary-600 transition-colors"
                           >
                             {child.label}

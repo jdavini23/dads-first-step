@@ -20,12 +20,13 @@ export const useNavigation = (): {
      * @param options - Optional navigation options
      */
     navigate: (route: Route, options?: { replace?: boolean }) => {
-      const path: string = getRoutePath(route);
+      const path = getRoutePath(route);
+      const navConfig = path as string;
 
       if (options?.replace) {
-        router.replace(path);
+        router.replace(navConfig);
       } else {
-        router.push(path);
+        router.push(navConfig);
       }
     },
 

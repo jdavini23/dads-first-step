@@ -91,22 +91,47 @@ export function asHref(
   query?: Record<string, string | number | string[]>; 
   hash?: string 
 } {
+  // Validate input
+  if (route === undefined || route === null) {
+    throw new Error('Route cannot be undefined or null');
+  }
+
   // If it's already a string, return it
-  if (typeof route === 'string') return route;
+  if (typeof route === 'string') {
+    // Validate string route if it's from Routes
+    if (Object.values(Routes).includes(route)) {
+      return route;
+    }
+    throw new Error(`Invalid route string: ${route}`);
+  }
   
   // If it's an object with pathname, return the object
-  if ('pathname' in route) return {
-    pathname: route.pathname,
-    query: params || route.query,
-    hash: route.hash
-  };
+  if ('pathname' in route) {
+    // Validate pathname
+    if (typeof route.pathname !== 'string') {
+      throw new Error(`Invalid pathname: ${route.pathname}`);
+    }
+    
+    return {
+      pathname: route.pathname,
+      query: params || route.query,
+      hash: route.hash
+    };
+  }
   
   // If it's an object with href, return the object
-  if ('href' in route) return {
-    pathname: route.href,
-    query: params || route.query,
-    hash: route.hash
-  };
+  if ('href' in route) {
+    // Validate href
+    if (typeof route.href !== 'string') {
+      throw new Error(`Invalid href: ${route.href}`);
+    }
+    
+    return {
+      pathname: route.href,
+      query: params || route.query,
+      hash: route.hash
+    };
+  }
   
   // Fallback to home route
   return Routes.HOME;

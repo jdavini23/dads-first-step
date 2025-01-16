@@ -3,7 +3,7 @@ const nextConfig = {
   output: 'standalone',
   experimental: {
     typedRoutes: true,
-    optimizePackageImports: true,
+    optimizePackageImports: ['@mui/material', '@mui/icons-material'],
     serverComponentsExternalPackages: ['@prisma/client']
   },
   eslint: {
