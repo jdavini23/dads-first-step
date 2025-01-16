@@ -1,38 +1,45 @@
 import React from 'react';
-import Link from 'next/link';
-import { Route, Routes, isValidRoute } from '@/types/routes';
+import Link, { LinkProps } from 'next/link';
+import { Route, Routes, isValidRoute, asHref, ExtendedRouteValue } from '@/types/routes';
 
 /**
  * Props for the TypedLink component
  */
-type TypedLinkProps = {
+interface TypedLinkProps extends Omit<LinkProps, 'href'> {
   route?: Route;
-  href?: string;
+  href?: ExtendedRouteValue;
   children: React.ReactNode;
   className?: string;
   target?: '_blank' | '_self' | '_parent' | '_top';
-};
+}
 
 /**
  * Type-safe link component that ensures only valid routes are used
  */
-export const TypedLink: React.FC<TypedLinkProps> = ({
+export const TypedLink = ({
   route, 
   href,
   children, 
   className,
-  target = '_self'
-}) => {
+  target = '_self',
+  ...props
+}: TypedLinkProps) => {
+  // Validate that only one of route or href is provided
+  if (route && href) {
+    console.warn('Both route and href provided. Prioritizing route.');
+  }
+
   // Prioritize route, then href, fallback to home route
   const linkHref = 
-    (route && Routes[route]) || 
-    (href && isValidRoute(href) ? href : Routes.HOME);
+    (route ? asHref(Routes[route]) : 
+    (href ? asHref(href) : asHref(Routes.HOME)));
 
   return (
     <Link 
       href={linkHref} 
       className={className}
       target={target}
+      {...props}
     >
       {children}
     </Link>

@@ -1,11 +1,15 @@
 import { useRouter, usePathname } from 'next/navigation';
-import { Route, Routes, getRoutePath } from '@/types/routes';
+import { Route, Routes, getRoutePath, RouteValue } from '@/types/routes';
 
 /**
  * Custom hook for application-wide navigation
  * Provides type-safe navigation methods
  */
-export const useNavigation = () => {
+export const useNavigation = (): {
+  navigate: (route: Route, options?: { replace?: boolean }) => void;
+  getCurrentRoute: () => Route | null;
+  pathname: string;
+} => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -16,7 +20,7 @@ export const useNavigation = () => {
      * @param options - Optional navigation options
      */
     navigate: (route: Route, options?: { replace?: boolean }) => {
-      const path = getRoutePath(route);
+      const path: string = getRoutePath(route);
 
       if (options?.replace) {
         router.replace(path);
@@ -30,11 +34,11 @@ export const useNavigation = () => {
      * @returns The current route as a Route type
      */
     getCurrentRoute: (): Route | null => {
-      const matchedRoute = (Object.entries(Routes) as [Route, string][]).find(
+      const matchedRoute: [Route, RouteValue] | undefined = (Object.entries(Routes) as [Route, RouteValue][]).find(
         ([, routePath]) => routePath === pathname
-      )?.[0];
+      );
 
-      return matchedRoute || null;
+      return matchedRoute?.[0] || null;
     },
 
     /**

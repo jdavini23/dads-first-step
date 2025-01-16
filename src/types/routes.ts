@@ -76,15 +76,19 @@ export function isValidRoute(route: string): route is Route {
 }
 
 // Utility to convert a route to a valid href
-export function asHref(route: ExtendedRouteValue): RouteValue {
-  if (typeof route === 'string' && isValidRoute(route)) {
-    return route;
-  }
-  if (typeof route === 'object' && 'pathname' in route) {
-    return route.pathname as RouteValue;
-  }
-  if (typeof route === 'object' && 'href' in route) {
-    return route.href as RouteValue;
-  }
-  throw new Error(`Invalid route: ${JSON.stringify(route)}`);
+export function asHref(route: ExtendedRouteValue): string {
+  // If it's already a string, return it
+  if (typeof route === 'string') return route;
+  
+  // If it's an object with pathname, return the pathname
+  if ('pathname' in route) return route.pathname;
+  
+  // If it's an object with href, return the href
+  if ('href' in route) return route.href;
+  
+  // If it's a UrlObject, convert to string
+  if (typeof route === 'object' && 'path' in route) return route.path as string;
+  
+  // Fallback to home route
+  return Routes.HOME;
 }
