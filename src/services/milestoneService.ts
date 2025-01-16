@@ -14,6 +14,7 @@ import {
   UserMilestone,
   MilestoneCategory,
   MilestoneDifficulty,
+  MilestoneType,
   Milestone,
 } from '@/types/milestone';
 
@@ -87,6 +88,7 @@ export const getMilestoneTemplates = (): UserMilestone[] => [
     userId: '', // Will be set when added
     title: 'First Smile',
     description: "Your baby's first social smile",
+    type: MilestoneType.SOCIAL,
     category: MilestoneCategory.SOCIAL,
     minAge: 6,
     maxAge: 12,
@@ -94,6 +96,7 @@ export const getMilestoneTemplates = (): UserMilestone[] => [
     skills: ['Social Interaction', 'Emotional Recognition'],
     completed: false,
     progress: 0,
+    date: new Date(),
     resources: [
       'https://www.healthychildren.org/English/ages-stages/baby/Pages/Developmental-Milestones.aspx',
     ],
@@ -105,6 +108,7 @@ export const getMilestoneTemplates = (): UserMilestone[] => [
     userId: '', // Will be set when added
     title: 'First Steps',
     description: 'Taking first independent steps',
+    type: MilestoneType.PHYSICAL,
     category: MilestoneCategory.PHYSICAL,
     minAge: 9,
     maxAge: 18,
@@ -112,6 +116,7 @@ export const getMilestoneTemplates = (): UserMilestone[] => [
     skills: ['Motor Skills', 'Balance', 'Coordination'],
     completed: false,
     progress: 0,
+    date: new Date(),
     resources: ['https://www.cdc.gov/ncbddd/childdevelopment/facts.html'],
     createdAt: '',
     updatedAt: ''
@@ -131,6 +136,7 @@ export const addDefaultMilestones = async (userId: string): Promise<string[]> =>
       userId, // Set user ID directly
       title: 'First Smile',
       description: "Your baby's first social smile",
+      type: MilestoneType.SOCIAL,
       category: MilestoneCategory.SOCIAL,
       minAge: 6,
       maxAge: 12,
@@ -148,6 +154,7 @@ export const addDefaultMilestones = async (userId: string): Promise<string[]> =>
       userId, // Set user ID directly
       title: 'First Steps',
       description: 'Taking first independent steps',
+      type: MilestoneType.PHYSICAL,
       category: MilestoneCategory.PHYSICAL,
       minAge: 9,
       maxAge: 18,
