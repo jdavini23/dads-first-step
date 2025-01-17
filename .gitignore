@@ -1,96 +1,44 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+# Dependency directories
+node_modules/
 
-# testing
-/coverage
+# Next.js build output
+.next/
+out/
+build/
 
-# next.js
-/.next/
-/out/
-/build
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
 
-# production
-/dist
-
-# misc
-.DS_Store
-*.pem
-
-# debug
+# Logging
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Testing
+coverage/
+.nyc_output/
 
-# secrets and sensitive information
-*.secret
-*.key
-*.pem
-.env*
-!.env.example
-
-# IDE and editor files
+# IDE and Editor files
 .idea/
 .vscode/
 *.swp
 *.swo
-*.swn
 *~
 
-# Backup and temporary files
-*.bak
-*.tmp
-*.orig
-*.log
+# OS generated files
+.DS_Store
+Thumbs.db
 
-# Dependency and package management
-node_modules/
-jspm_packages/
-.npm
-.yarn/cache
-.yarn/unplugged
-.pnp.*
-
-# Build and development artifacts
-.cache/
-.parcel-cache/
-.vercel/
-.firebase/
-*.tsbuildinfo
-
-# Typescript build info
-*.tsbuildinfo
-
-# Specific project exclusions
-/scripts/fix-lint.js
-/public/patterns/
-/localhost_*.report.html
-.windsurfrules
-
-# Logs
-logs/
-*.log
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# TypeScript v1 declaration files
+typings/
 
 # Optional npm cache directory
 .npm
@@ -108,42 +56,14 @@ pids
 .yarn-integrity
 
 # dotenv environment variables file
-.env.local
+.env.test
 
-# parcel-bundler cache
-.cache
-.parcel-cache
+# Temporary files
+tmp/
+temp/
 
-# Next.js build output
-.next
-out
+# Firebase cache
+.firebase/
 
-# Nuxt.js build / generate output
-.nuxt
-dist
-
-# Gatsby files
-.cache/
-
-# vuepress build output
-.vuepress/dist
-
-# Serverless directories
-.serverless/
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
-# yarn v2
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
+# Next.js build cache
+.swc/

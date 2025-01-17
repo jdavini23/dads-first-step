@@ -1,72 +1,92 @@
 # Contributing to Dad's First Step
 
-## Development Workflow
+## 🤝 How to Contribute
 
-### Branch Strategy
-1. **Never commit directly to `main`**
-2. Create feature branches from `main`
-3. Use descriptive branch names:
-   - `feature/add-milestone-tracking`
-   - `bugfix/navigation-error`
-   - `refactor/update-auth-system`
+We welcome contributions from the community! This document provides guidelines for contributing to the project.
 
-### Commit Guidelines
-- Make small, focused commits
-- Limit commits to < 50 changed files
-- Use conventional commit format:
-  ```
-  <type>(scope): <description>
-  
-  [optional body]
-  
-  [optional footer]
-  ```
+### 📋 Prerequisites
 
-#### Commit Types:
-- `feat`: New features
-- `fix`: Bug fixes
+- Node.js (v18+)
+- npm or Yarn
+- Git
+- Basic understanding of TypeScript and React
+
+### 🚀 Getting Started
+
+1. Fork the repository
+2. Clone your forked repository
+   ```bash
+   git clone https://github.com/your-username/dads-first-step.git
+   cd dads-first-step
+   ```
+3. Install dependencies
+   ```bash
+   npm install
+   ```
+
+### 🌿 Branch Strategy
+
+- `main`: Stable production branch
+- `develop`: Active development branch
+- Feature branches: `feature/your-feature-name`
+- Bugfix branches: `bugfix/issue-description`
+
+### 🔧 Development Workflow
+
+1. Create a new branch
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+2. Make your changes
+3. Run linting and tests
+   ```bash
+   npm run lint
+   npm test
+   ```
+4. Commit changes following conventional commit format
+   ```
+   <type>(scope): <description>
+   
+   [optional body]
+   ```
+   Example: `feat(milestones): add new milestone tracking feature`
+
+### 📝 Commit Message Types
+- `feat`: New feature
+- `fix`: Bug fix
 - `docs`: Documentation changes
-- `style`: Formatting, missing semicolons
+- `style`: Code formatting
 - `refactor`: Code restructuring
-- `test`: Adding or modifying tests
+- `test`: Adding or updating tests
 - `chore`: Maintenance tasks
 
-### Pull Request Process
-1. Open a PR from your feature branch to `main`
-2. Ensure all CI checks pass
-3. Request a review from at least one team member
-4. Squash and merge after approval
+### 🧪 Testing
 
-## Code Quality
+- Write unit tests for new features
+- Ensure 80%+ test coverage
+- Use descriptive test names
+- Test both happy paths and edge cases
 
-### Linting and Formatting
-- Run `npm run lint` before committing
-- Use provided `.eslintrc` and `.prettierrc`
-- Fix all linting errors before committing
+### 🔍 Code Review Process
 
-### Testing
-- Write tests for new features
-- Maintain > 80% test coverage
-- Run `npm test` before committing
+1. Open a pull request with a clear title and description
+2. Include screenshots for UI changes
+3. Ensure all CI checks pass
+4. Wait for at least one reviewer's approval
 
-## Sensitive Information
-- **NEVER** commit:
-  - API keys
-  - Passwords
-  - Personal credentials
-- Use `.env.example` as a template
-- Store secrets in secure environment variables
+### 🛡️ Code of Conduct
 
-## Performance and Best Practices
-- Optimize imports
-- Use code splitting
-- Minimize bundle size
-- Follow React and Next.js best practices
+- Be respectful and inclusive
+- Provide constructive feedback
+- Collaborate and support each other
 
-## Troubleshooting
-- If you encounter merge conflicts, communicate with the team
-- Use the migration scripts in `/scripts`
-- Consult documentation before making significant changes
+### 📢 Reporting Issues
 
-## Questions?
-Reach out to the project maintainers for guidance.
+- Use GitHub Issues
+- Provide detailed description
+- Include steps to reproduce
+- Attach relevant logs or screenshots
+
+## 🏆 Thank You!
+
+Your contributions make this project better. We appreciate your help!

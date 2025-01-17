@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dad's First Step 👶🏽
 
-## Getting Started
+## Project Overview
+Dad's First Step is a comprehensive baby milestone tracking application designed to empower fathers in documenting and celebrating their child's developmental journey.
 
-First, run the development server:
+### 🌟 Key Features
+- Personalized Milestone Tracking
+- Memory Preservation
+- Developmental Insights
+- Intuitive User Interface
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Tech Stack
+- **Frontend**: Next.js 14
+- **Language**: TypeScript
+- **State Management**: Zustand
+- **Styling**: Tailwind CSS
+- **Authentication**: Firebase
+- **Database**: Firestore
+- **Animation**: Framer Motion
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📦 Prerequisites
+- Node.js (v18+)
+- npm or Yarn
+- Firebase Account
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔧 Local Setup
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/dads-first-step.git
+   cd dads-first-step
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Install dependencies
+   ```bash
+   npm install
+   ```
 
-## Learn More
+3. Set up environment variables
+   - Create `.env.local` with Firebase configuration
+   - Refer to `.env.example` for required variables
 
-To learn more about Next.js, take a look at the following resources:
+4. Run development server
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧪 Testing
+- Run tests: `npm test`
+- Coverage report: `npm run test:coverage`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚢 Deployment
+- Vercel recommended for Next.js applications
+- Firebase hosting available
 
-## Deploy on Vercel
+## 🔒 Security
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Authentication
+- Secure Firebase Authentication
+- Multi-factor authentication support
+- Role-based access control
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Data Protection
+- End-to-end encryption for sensitive data
+- Secure storage of personal information
+- Compliance with GDPR and CCPA
+
+### Privacy Commitment
+- Minimal data collection
+- Transparent data usage policies
+- User-controlled data sharing
+
+### Reporting Security Issues
+Please refer to our [SECURITY.md](SECURITY.md) for responsible disclosure guidelines.
+
+## 🌐 Compliance
+- WCAG 2.1 Accessibility Standards
+- HIPAA-adjacent data protection practices
+- Regular security audits and penetration testing
+
+## 📝 Contributing
+Please read `CONTRIBUTING.md` for details on our code of conduct and the process for submitting pull requests.
+
+## 📄 License
+This project is licensed under the MIT License - see the `LICENSE.md` file for details.
+
+## 🙏 Acknowledgments
+- Inspired by the beautiful journey of fatherhood
+- Thanks to the open-source community
