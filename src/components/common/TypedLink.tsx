@@ -1,13 +1,14 @@
 import React from 'react';
 import Link, { LinkProps } from 'next/link';
-import { Route, Routes } from '@/types/routes';
+import { Route, Routes, RouteValue, ExtendedRouteValue } from '@/types/routes';
+import { UrlObject } from 'url';
 
 /**
  * Props for the TypedLink component
  */
 type TypedLinkProps = Omit<React.ComponentProps<typeof Link>, 'href'> & {
   route?: Route;
-  href?: string;
+  href?: RouteValue | ExtendedRouteValue;
 };
 
 /**
@@ -18,15 +19,23 @@ export function TypedLink({
   href, 
   children, 
   ...props 
-}: TypedLinkProps) {
+}: TypedLinkProps): React.ReactElement {
   // Determine the final href
   const linkHref = route 
     ? Routes[route] 
-    : href ?? Routes.HOME;
+    : href;
+
+  // Ensure we always have a valid href
+  const safeHref = linkHref ?? Routes.HOME;
+
+  // Convert to Next.js Link compatible href
+  const finalHref = typeof safeHref === 'string' 
+    ? { pathname: safeHref } 
+    : safeHref;
 
   return (
     <Link 
-      href={linkHref as LinkProps<string>['href']} 
+      href={finalHref} 
       {...props}
     >
       {children}

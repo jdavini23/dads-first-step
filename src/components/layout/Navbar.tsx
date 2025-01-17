@@ -46,21 +46,39 @@ export function Navbar() {
   const { pathname } = useNavigation();
   const navRef = useRef<HTMLDivElement>(null);
 
+  // Debugging log
+  useEffect(() => {
+    console.log('Mobile Menu State:', {
+      isMenuOpen,
+      activeDropdown,
+      pathname
+    });
+  }, [isMenuOpen, activeDropdown, pathname]);
+
   // Close dropdowns and mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(event.target as Node)) {
-        setActiveDropdown(null);
+      // Check if the click is outside the nav and hamburger menu
+      if (
+        navRef.current && 
+        !navRef.current.contains(event.target as Node) && 
+        isMenuOpen
+      ) {
+        // Close menu and reset dropdowns
         setIsMenuOpen(false);
+        setActiveDropdown(null);
         setHoverDropdown(null);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+    // Only add event listener when menu is open
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isMenuOpen, navRef]);
 
   // Close mobile menu when path changes
   useEffect(() => {
@@ -68,12 +86,11 @@ export function Navbar() {
     setHoverDropdown(null);
   }, [pathname]);
 
-  useEffect(() => {
-    console.log('Current Pathname:', pathname);
-    console.log('Nav Links:', navLinks);
-  }, [pathname]);
+  const toggleMenu = () => {
+    console.log('Toggle Menu Clicked', !isMenuOpen);
+    setIsMenuOpen(prev => !prev);
+  };
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
 
   const toggleDropdown = (label: string) => {
@@ -81,19 +98,39 @@ export function Navbar() {
   };
 
   const renderDropdownLinks = (links: { label: string; route: Route }[], parentLabel: string) => (
-    <div 
+    <div
       className={`absolute top-full left-0 min-w-[200px] bg-white shadow-lg rounded-lg border border-neutral-100 py-2 z-50 transition-all duration-200 ease-in-out ${
-        hoverDropdown === parentLabel ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+        hoverDropdown === parentLabel
+          ? 'opacity-100 translate-y-0'
+          : 'opacity-0 -translate-y-2 pointer-events-none'
       }`}
     >
       {links.map((child, index) => (
-          <TypedLink
-            key={`${child.route}-${index}`}
-            route={child.route}
-            className="block px-4 py-2 hover:bg-neutral-50 text-neutral-700 hover:text-primary-600 transition-colors"
-          >
-            {child.label}
-          </TypedLink>
+        <TypedLink
+          key={`${child.route}-${index}`}
+          route={child.route}
+          className="block px-4 py-2 hover:bg-neutral-50 text-neutral-700 hover:text-primary-600 transition-colors"
+        >
+          {child.label}
+        </TypedLink>
+      ))}
+    </div>
+  );
+
+  const renderMobileDropdownLinks = (links: { label: string; route: Route }[], parentLabel: string) => (
+    <div className="pl-4 mt-2">
+      {links.map((child, index) => (
+        <TypedLink
+          key={`${child.route}-${index}`}
+          route={child.route}
+          className="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
+          onClick={() => {
+            setIsMenuOpen(false);
+            setActiveDropdown(null);
+          }}
+        >
+          {child.label}
+        </TypedLink>
       ))}
     </div>
   );
@@ -121,21 +158,18 @@ export function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
-            <div 
-              key={link.label} 
+            <div
+              key={link.label}
               className="relative"
               onMouseEnter={() => setHoverDropdown(link.label)}
               onMouseLeave={() => setHoverDropdown(null)}
             >
               <div className="flex items-center text-neutral-700 hover:text-primary-600 transition-colors cursor-pointer py-3">
-                <TypedLink
-                  route={link.route}
-                  className="flex items-center"
-                >
+                <TypedLink route={link.route} className="flex items-center">
                   {link.label}
                 </TypedLink>
                 {link.dropdown && (
-                  <HiOutlineChevronDown 
+                  <HiOutlineChevronDown
                     className={`ml-1 h-4 w-4 transition-transform duration-200 ${
                       hoverDropdown === link.label ? 'rotate-180' : ''
                     }`}
@@ -194,91 +228,88 @@ export function Navbar() {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden fixed inset-0 bg-white/95 z-40 pt-20 px-6 overflow-y-auto"
-          >
-            <div className="flex flex-col space-y-6">
-              {navLinks.map((link) => (
-                <div key={link.label} className="border-b border-neutral-200 pb-2">
-                  <div
-                    onClick={() => link.dropdown && toggleDropdown(link.label)}
-                    className="flex items-center justify-between text-2xl text-neutral-800 hover:text-primary-600 transition-colors cursor-pointer"
-                  >
-                    <TypedLink route={link.route}>{link.label}</TypedLink>
-                    {link.dropdown && (
-                      <HiOutlineChevronDown
-                        className={`h-6 w-6 transition-transform ${
-                          activeDropdown === link.label ? 'rotate-180' : ''
-                        }`}
-                      />
-                    )}
-                  </div>
-                  {link.dropdown && activeDropdown === link.label && link.children && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="pl-4 mt-2 space-y-2"
-                    >
-                      {link.children.map((child, childIndex) => (
-                        isValidRoute(child.route) && (
-                          <TypedLink
-                            key={`mobile-${child.route}-${childIndex}`}
-                            route={child.route}
-                            className="block text-lg text-neutral-700 hover:text-primary-600 transition-colors"
-                          >
-                            {child.label}
-                          </TypedLink>
-                        )
-                      ))}
-                    </motion.div>
-                  )}
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="md:hidden fixed inset-0 bg-black/20 z-[9998]"
+              onClick={() => setIsMenuOpen(false)}
+            />
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.3, type: 'tween' }}
+              className="md:hidden fixed top-[72px] right-0 w-screen max-w-[300px] bg-white z-[9999] shadow-lg"
+            >
+              <div className="flex flex-col max-h-[calc(100vh-72px)] overflow-y-auto">
+                <div className="px-6 py-4 space-y-4 flex-grow">
+                  {navLinks.map((link) => (
+                    <div key={link.label} className="border-b border-neutral-100 pb-4">
+                      <div 
+                        className="flex items-center justify-between text-neutral-800 font-semibold cursor-pointer"
+                        onClick={() => {
+                          if (!link.dropdown) {
+                            setIsMenuOpen(false);
+                          } else {
+                            toggleDropdown(link.label);
+                          }
+                        }}
+                      >
+                        <TypedLink 
+                          route={link.route} 
+                          className="flex-grow hover:text-primary-600 transition-colors"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {link.label}
+                        </TypedLink>
+                        {link.dropdown && (
+                          <HiOutlineChevronDown
+                            className={`ml-2 h-5 w-5 transition-transform duration-200 ${
+                              activeDropdown === link.label ? 'rotate-180' : ''
+                            }`}
+                          />
+                        )}
+                      </div>
+                      
+                      {link.dropdown && link.children && activeDropdown === link.label && (
+                        <div className="pl-4 mt-2 space-y-2">
+                          {link.children.map((child) => (
+                            <TypedLink 
+                              key={child.route} 
+                              route={child.route} 
+                              className="block py-2 text-neutral-600 hover:text-primary-600 transition-colors"
+                              onClick={() => {
+                                setIsMenuOpen(false);
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              {child.label}
+                            </TypedLink>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
-              <SignInButton>
-                <Button
-                  variant="default"
-                  className="w-full py-3 text-lg rounded-full mt-4 hover:scale-105 transition-transform"
-                >
-                  Get Started
-                </Button>
-              </SignInButton>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      {/* Search Overlay */}
-      <AnimatePresence>
-        {isSearchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-white/95 z-50 p-6"
-          >
-            <div className="container mx-auto max-w-2xl">
-              <div className="flex items-center border-b-2 border-primary-500 pb-2">
-                <HiOutlineSearch className="h-6 w-6 text-neutral-600 mr-3" />
-                <input
-                  type="text"
-                  placeholder="Search Dad's First Step..."
-                  className="w-full text-xl bg-transparent outline-none"
-                />
-                <button
-                  onClick={toggleSearch}
-                  className="text-neutral-600 hover:text-primary-600 transition-colors"
-                >
-                  <HiOutlineX className="h-6 w-6" />
-                </button>
+                {/* Mobile CTA */}
+                <div className="px-6 py-4 border-t border-neutral-100 bg-white">
+                  <SignInButton>
+                    <Button
+                      variant="default"
+                      className="w-full py-2.5 rounded-full"
+                    >
+                      Get Started
+                    </Button>
+                  </SignInButton>
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </nav>

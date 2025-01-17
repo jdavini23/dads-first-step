@@ -12,6 +12,7 @@ import { SignInButton } from '@/components/auth/SignInButton';
 import { FaBaby, FaHeart, FaBook, FaCalendarCheck } from 'react-icons/fa';
 import { MilestoneOverview } from '@/components/features/MilestoneOverview';
 import { HTMLMotionProps } from 'framer-motion';
+import { UrlObject } from 'url';
 
 // Skeleton loader for illustration
 const IllustrationLoader = () => (
@@ -155,10 +156,7 @@ export default function Home() {
                     </Button>
                   </SignInButton>
                 )}
-                <TypedLink
-                  route="ABOUT"
-                  aria-label="Learn More About Dad's First Step"
-                >
+                <TypedLink route="ABOUT" aria-label="Learn More About Dad's First Step">
                   <Button
                     variant="outline"
                     size="lg"

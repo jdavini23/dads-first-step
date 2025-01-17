@@ -37,24 +37,6 @@
 3. Request a review from at least one team member
 4. Squash and merge after approval
 
-## Branch Protection
-
-### Main Branch Rules
-- **Strict Protection Enabled**
-- Direct commits to `main` are **prohibited**
-- Pull requests require:
-  - At least 1 approved review
-  - Passing all status checks
-  - Up-to-date with base branch
-- Force pushes are **disabled**
-- Branch deletion is **restricted**
-
-### Required Status Checks
-- Lint verification
-- Unit tests
-- Type checking
-- Security scan
-
 ## Code Quality
 
 ### Linting and Formatting

@@ -16,10 +16,7 @@ export class Timestamp {
    * @param format - Formatting option
    * @returns Formatted timestamp string
    */
-  static format(
-    timestamp: string, 
-    format: 'short' | 'long' | 'relative' = 'short'
-  ): string {
+  static format(timestamp: string, format: 'short' | 'long' | 'relative' = 'short'): string {
     const date = new Date(timestamp);
 
     switch (format) {
@@ -48,15 +45,13 @@ export class Timestamp {
       { name: 'day', seconds: 86400 },
       { name: 'hour', seconds: 3600 },
       { name: 'minute', seconds: 60 },
-      { name: 'second', seconds: 1 }
+      { name: 'second', seconds: 1 },
     ];
 
     for (const unit of units) {
       const interval = Math.floor(diffInSeconds / unit.seconds);
       if (interval >= 1) {
-        return interval === 1 
-          ? `1 ${unit.name} ago` 
-          : `${interval} ${unit.name}s ago`;
+        return interval === 1 ? `1 ${unit.name} ago` : `${interval} ${unit.name}s ago`;
       }
     }
 

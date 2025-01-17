@@ -41,13 +41,13 @@ export function getRoutePath(route: Route): RouteValue {
 }
 
 // Extend RouteValue to include Next.js routing types
-export type ExtendedRouteValue = 
+export type ExtendedRouteValue =
   | RouteValue
-  | { 
-      pathname?: RouteValue; 
-      href?: RouteValue; 
-      query?: Record<string, string | number | string[]>; 
-      hash?: string 
+  | {
+      pathname?: RouteValue;
+      href?: RouteValue;
+      query?: Record<string, string | number | string[]>;
+      hash?: string;
     };
 
 // Type for route parameters if needed
@@ -57,19 +57,17 @@ export type RouteParams = Record<string, string | number>;
  * Helper function to create type-safe routes with optional params
  */
 export function createRoute(route: ExtendedRouteValue, params?: RouteParams): string {
-  const routeObj = typeof route === 'string' 
-    ? { pathname: route } 
-    : route;
+  const routeObj = typeof route === 'string' ? { pathname: route } : route;
 
   const { pathname, href, query, hash } = routeObj;
   const finalPath = pathname || href || Routes.HOME;
-  
-  const queryString = query 
+
+  const queryString = query
     ? Object.entries(query)
         .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
         .join('&')
     : '';
-  
+
   return `${finalPath}${queryString ? `?${queryString}` : ''}${hash ? `#${hash}` : ''}`;
 }
 
@@ -84,17 +82,14 @@ export function isValidRoute(route: string): route is Route {
  * Utility to convert a route to a valid href
  */
 export function asHref(
-  route: ExtendedRouteValue, 
+  route: ExtendedRouteValue,
   params?: { [key: string]: string | number }
 ): string {
   // If route is already a string, return it
   if (typeof route === 'string') return route;
 
   // If route is an object, extract pathname or href
-  const finalPath = 
-    route.pathname || 
-    route.href || 
-    Routes.HOME;
+  const finalPath = route.pathname || route.href || Routes.HOME;
 
   return finalPath;
 }
@@ -103,7 +98,5 @@ export function asHref(
  * Resolve a route to its string value
  */
 export function resolveRoute(route: Route | string): string {
-  return typeof route === 'string' 
-    ? (Routes[route as Route] || route)
-    : Routes[route];
+  return typeof route === 'string' ? Routes[route as Route] || route : Routes[route];
 }

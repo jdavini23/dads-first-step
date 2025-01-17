@@ -15,9 +15,12 @@ export const useNavigation = () => {
      * @param route - The route to navigate to
      * @param options - Optional navigation options
      */
-    navigate: (route: Route | ExtendedRouteValue, options?: { replace?: boolean; query?: { [key: string]: string } }) => {
+    navigate: (
+      route: Route | ExtendedRouteValue,
+      options?: { replace?: boolean; query?: { [key: string]: string } }
+    ) => {
       let path: string;
-      
+
       if (typeof route === 'string') {
         path = resolveRoute(route);
       } else if (typeof route === 'object') {
@@ -28,7 +31,7 @@ export const useNavigation = () => {
 
       const navigationConfig = {
         pathname: path,
-        query: options?.query
+        query: options?.query,
       };
 
       // Type assertion to match Next.js router type
@@ -44,9 +47,9 @@ export const useNavigation = () => {
      * @returns The current route as a Route type
      */
     getCurrentRoute: (): Route | null => {
-      const matchedRoute: [Route, RouteValue] | undefined = (Object.entries(Routes) as [Route, RouteValue][]).find(
-        ([, routePath]) => routePath === pathname
-      );
+      const matchedRoute: [Route, RouteValue] | undefined = (
+        Object.entries(Routes) as [Route, RouteValue][]
+      ).find(([, routePath]) => routePath === pathname);
 
       return matchedRoute?.[0] ?? null;
     },
