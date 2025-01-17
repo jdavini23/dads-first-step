@@ -1,12 +1,15 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   
   // Performance and optimization
   experimental: {
     optimizePackageImports: ['@/components', '@/hooks', '@/lib'],
-    serverActions: true,
+    serverActions: {
+      allowedOrigins: ['localhost:3000']
+    },
     typedRoutes: true
   },
 
@@ -18,6 +21,7 @@ const nextConfig = {
     // Ignore unnecessary files on the client
     if (!isServer) {
       config.resolve.fallback = {
+        ...config.resolve.fallback,
         fs: false,
         net: false,
         tls: false
@@ -37,7 +41,7 @@ const nextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     formats: ['image/avif', 'image/webp'],
-    domains: ['firebasestorage.googleapis.com', 'lh3.googleusercontent.com']
+    domains: ['firebasestorage.googleapis.com']
   },
 
   // Internationalization
@@ -53,4 +57,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+module.exports = nextConfig;
