@@ -23,13 +23,19 @@ export function TypedLink({
   // Determine the final href
   const linkHref = route 
     ? Routes[route] 
-    : (href ?? Routes.HOME);
+    : href;
+
+  // Ensure we always have a valid href
+  const safeHref = linkHref ?? Routes.HOME;
+
+  // Convert to Next.js Link compatible href
+  const finalHref = typeof safeHref === 'string' 
+    ? { pathname: safeHref } 
+    : safeHref;
 
   return (
     <Link 
-      href={typeof linkHref === 'string' 
-        ? { pathname: linkHref } 
-        : linkHref} 
+      href={finalHref} 
       {...props}
     >
       {children}

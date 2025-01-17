@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none">
+  <style>
+    .primary { fill: #3B82F6; }
+    .secondary { fill: #10B981; }
+    .accent { fill: #F43F5E; }
+  </style>
+  
+  <!-- Background -->
+  <rect width="600" height="400" fill="#F0F9FF"/>
+  
+  <!-- Journey Path -->
+  <path d="M50 350 Q300 100 550 350" stroke="#CBD5E1" stroke-width="4" stroke-dasharray="10 10"/>
+  
+  <!-- Milestone Icons -->
+  <circle cx="100" cy="300" r="40" fill="#E0F2FE" className="primary"/>
+  <path d="M90 280h20v40h-20z" fill="#3B82F6" className="primary"/>
+  
+  <circle cx="250" cy="200" r="40" fill="#D1FAE5" className="secondary"/>
+  <path d="M240 180h20v40h-20z" fill="#10B981" className="secondary"/>
+  
+  <circle cx="400" cy="250" r="40" fill="#FEE2E2" className="accent"/>
+  <path d="M390 230h20v40h-20z" fill="#F43F5E" className="accent"/>
+  
+  <circle cx="500" cy="300" r="40" fill="#E0F2FE" className="primary"/>
+  <path d="M490 280h20v40h-20z" fill="#3B82F6" className="primary"/>
+  
+  <!-- Baby Silhouettes -->
+  <path d="M100 260 L110 240 L120 260" stroke="#000" stroke-width="3" fill="none"/>
+  <path d="M250 180 L260 160 L270 180" stroke="#000" stroke-width="3" fill="none"/>
+  <path d="M400 230 L410 210 L420 230" stroke="#000" stroke-width="3" fill="none"/>
+  <path d="M500 260 L510 240 L520 260" stroke="#000" stroke-width="3" fill="none"/>
+</svg>
