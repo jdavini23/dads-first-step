@@ -49,6 +49,13 @@ yarn-error.log*
 *.swp
 *.swo
 
+# Backup files
+*.bak
+*.backup
+
+# Vercel
+.vercel/
+
 # Logs
 logs
 *.log
