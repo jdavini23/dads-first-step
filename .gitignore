@@ -16,9 +16,10 @@
 # next.js
 /.next/
 /out/
+/build
 
 # production
-/build
+/dist
 
 # misc
 .DS_Store
@@ -48,16 +49,41 @@ yarn-error.log*
 .vscode/
 *.swp
 *.swo
+*.swn
+*~
 
-# Backup files
+# Backup and temporary files
 *.bak
-*.backup
+*.tmp
+*.orig
+*.log
 
-# Vercel
+# Dependency and package management
+node_modules/
+jspm_packages/
+.npm
+.yarn/cache
+.yarn/unplugged
+.pnp.*
+
+# Build and development artifacts
+.cache/
+.parcel-cache/
 .vercel/
+.firebase/
+*.tsbuildinfo
+
+# Typescript build info
+*.tsbuildinfo
+
+# Specific project exclusions
+/scripts/fix-lint.js
+/public/patterns/
+/localhost_*.report.html
+.windsurfrules
 
 # Logs
-logs
+logs/
 *.log
 
 # Runtime data
@@ -65,10 +91,6 @@ pids
 *.pid
 *.seed
 *.pid.lock
-
-# Dependency directories
-node_modules/
-jspm_packages/
 
 # Optional npm cache directory
 .npm
@@ -88,7 +110,7 @@ jspm_packages/
 # dotenv environment variables file
 .env.local
 
-# parcel-bundler cache (https://parceljs.org/)
+# parcel-bundler cache
 .cache
 .parcel-cache
 
@@ -102,9 +124,6 @@ dist
 
 # Gatsby files
 .cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
 
 # vuepress build output
 .vuepress/dist
@@ -125,8 +144,6 @@ dist
 .vscode-test
 
 # yarn v2
-.yarn/cache
-.yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
