@@ -1,15 +1,11 @@
 import { useRouter, usePathname } from 'next/navigation';
-import { Route, Routes, getRoutePath, RouteValue } from '@/types/routes';
+import { Route, Routes, RouteValue, ExtendedRouteValue, resolveRoute } from '@/types/routes';
 
 /**
  * Custom hook for application-wide navigation
  * Provides type-safe navigation methods
  */
-export const useNavigation = (): {
-  navigate: (route: Route, options?: { replace?: boolean }) => void;
-  getCurrentRoute: () => Route | null;
-  pathname: string;
-} => {
+export const useNavigation = () => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -19,14 +15,27 @@ export const useNavigation = (): {
      * @param route - The route to navigate to
      * @param options - Optional navigation options
      */
-    navigate: (route: Route, options?: { replace?: boolean }) => {
-      const path = getRoutePath(route);
-      const navConfig = path as string;
-
-      if (options?.replace) {
-        router.replace(navConfig);
+    navigate: (route: Route | ExtendedRouteValue, options?: { replace?: boolean; query?: { [key: string]: string } }) => {
+      let path: string;
+      
+      if (typeof route === 'string') {
+        path = resolveRoute(route);
+      } else if (typeof route === 'object') {
+        path = route.pathname || route.href || Routes.HOME;
       } else {
-        router.push(navConfig);
+        path = Routes[route as Route];
+      }
+
+      const navigationConfig = {
+        pathname: path,
+        query: options?.query
+      };
+
+      // Type assertion to match Next.js router type
+      if (options?.replace) {
+        router.replace(navigationConfig as any);
+      } else {
+        router.push(navigationConfig as any);
       }
     },
 
@@ -39,7 +48,7 @@ export const useNavigation = (): {
         ([, routePath]) => routePath === pathname
       );
 
-      return matchedRoute?.[0] || null;
+      return matchedRoute?.[0] ?? null;
     },
 
     /**
