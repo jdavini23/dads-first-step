@@ -12,16 +12,16 @@ interface ThemeProviderProps {
   forcedTheme?: string;
 }
 
-export function ThemeProvider({ 
+export function ThemeProvider({
   children,
-  attribute = "class",
-  defaultTheme = "system",
+  attribute = 'class',
+  defaultTheme = 'system',
   enableSystem = true,
   disableTransitionOnChange = true,
   forcedTheme,
 }: ThemeProviderProps) {
   return (
-    <NextThemesProvider 
+    <NextThemesProvider
       attribute={attribute}
       defaultTheme={defaultTheme}
       enableSystem={enableSystem}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <title>Dad and Baby Illustration</title>
+  <circle cx="250" cy="250" r="200" fill="#f0f9ff"/>
+  <path fill="#4a90e2" d="M250 100a50 50 0 1 0 0 100 50 50 0 0 0 0-100zm100 200c-20-30-50-50-100-50s-80 20-100 50l50 150h100l50-150z"/>
+</svg>

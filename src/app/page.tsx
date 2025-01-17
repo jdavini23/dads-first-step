@@ -1,9 +1,11 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { Routes } from '@/types/routes';
 import { TypedLink } from '@/components/common/TypedLink';
 import { AppLink } from '@/components/common/AppLink';
+import { UrlObject } from 'url';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
@@ -11,7 +13,6 @@ import { useAuthStore } from '@/stores/authStore';
 import { SignInButton } from '@/components/auth/SignInButton';
 import { FaBaby, FaHeart, FaBook, FaCalendarCheck } from 'react-icons/fa';
 import { MilestoneOverview } from '@/components/features/MilestoneOverview';
-import { HTMLMotionProps } from 'framer-motion';
 
 // Skeleton loader for illustration
 const IllustrationLoader = () => (
@@ -137,28 +138,20 @@ export default function Home() {
 
               <div className="flex flex-wrap gap-4">
                 {_user ? (
-                  <AppLink href={Routes.MILESTONES} aria-label="Track Milestones">
+                  <TypedLink route="MILESTONES" aria-label="Track Milestones">
                     <Button
                       size="lg"
                       className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all"
                     >
                       Track Milestones
                     </Button>
-                  </AppLink>
+                  </TypedLink>
                 ) : (
                   <SignInButton>
-                    <Button
-                      size="lg"
-                      className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl transition-all"
-                    >
-                      Get Started
-                    </Button>
+                    <Button size="lg">Get Started</Button>
                   </SignInButton>
                 )}
-                <TypedLink
-                  route="ABOUT"
-                  aria-label="Learn More About Dad's First Step"
-                >
+                <TypedLink route="ABOUT" aria-label="Learn More About Dad's First Step">
                   <Button
                     variant="outline"
                     size="lg"
@@ -285,7 +278,7 @@ export default function Home() {
               </p>
 
               {_user ? (
-                <AppLink href={Routes.MILESTONES} aria-label="View Your Milestones">
+                <TypedLink route="MILESTONES" aria-label="View Your Milestones">
                   <Button
                     variant="outline"
                     size="lg"
@@ -293,7 +286,7 @@ export default function Home() {
                   >
                     View Your Milestones
                   </Button>
-                </AppLink>
+                </TypedLink>
               ) : (
                 <SignInButton>
                   <Button

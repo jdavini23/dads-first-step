@@ -67,10 +67,7 @@ export function MilestoneOverview() {
                 {pendingMilestones.map((milestone) => (
                   <li key={milestone.id} className="flex items-center justify-between">
                     <span>{milestone.title}</span>
-                    <TypedLink 
-                      route="MILESTONES_ADD" 
-                      className="text-blue-500 hover:underline"
-                    >
+                    <TypedLink route="MILESTONES" className="text-blue-500 hover:underline">
                       Edit
                     </TypedLink>
                   </li>
@@ -83,9 +80,11 @@ export function MilestoneOverview() {
         </div>
       </div>
       <div className="flex justify-center">
-        <Button 
-          variant="default" 
-          onClick={() => {/* Add milestone */}}
+        <Button
+          variant="default"
+          onClick={() => {
+            /* Add milestone */
+          }}
         >
           Add New Milestone
         </Button>

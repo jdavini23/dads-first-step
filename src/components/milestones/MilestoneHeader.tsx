@@ -11,7 +11,7 @@ export function MilestoneHeader() {
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Baby Milestones</h1>
         <nav>
-          <TypedLink route="MILESTONES_ADD">
+          <TypedLink route={Routes.MILESTONES_ADD}>
             <Button variant="default">Add Milestone</Button>
           </TypedLink>
         </nav>

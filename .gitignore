@@ -31,18 +31,13 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+*.env
+!.env.example
 
 # secrets and sensitive information
 *.secret
 *.key
 *.pem
-.env*
-!.env.example
 
 # IDE and editor files
 .idea/
@@ -107,9 +102,6 @@ pids
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env.local
-
 # parcel-bundler cache
 .cache
 .parcel-cache
@@ -147,3 +139,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+.vercel
