@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Prevent committing to main/master directly
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
+    echo "Error: Direct commits to main/master are not allowed. Please use feature branches."
+    exit 1
+fi
+
+# Limit number of changed files
+MAX_CHANGES=50
+CHANGED_FILES=$(git diff --cached --name-only | wc -l)
+
+if [ $CHANGED_FILES -gt $MAX_CHANGES ]; then
+    echo "Error: Too many files changed ($CHANGED_FILES). Limit is $MAX_CHANGES."
+    echo "Please break this into smaller, more focused commits."
+    exit 1
+fi
+
+# Check for large files
+MAX_FILE_SIZE=$((10 * 1024 * 1024))  # 10MB
+LARGE_FILES=$(find . -type f -size +$MAX_FILE_SIZE)
+
+if [ -n "$LARGE_FILES" ]; then
+    echo "Error: Large files detected:"
+    echo "$LARGE_FILES"
+    exit 1
+fi
+
+# Prevent committing sensitive information
+SENSITIVE_PATTERNS=(
+    "password"
+    "secret"
+    "token"
+    "key="
+    "AWS_"
+    "GITHUB_"
+    "FIREBASE_"
+)
+
+for pattern in "${SENSITIVE_PATTERNS[@]}"; do
+    if git diff --cached | grep -q "$pattern"; then
+        echo "Error: Potential sensitive information detected matching pattern: $pattern"
+        exit 1
+    fi
+done
+
+# Run linters and tests
+npm run lint
+npm run typecheck
+
+exit 0

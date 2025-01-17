@@ -10,10 +10,7 @@ export interface MilestoneState {
   addMilestone: (milestone: UserMilestone) => void;
   updateMilestone: (id: string, updates: Partial<UserMilestone>) => void;
   removeMilestone: (id: string) => void;
-  filterMilestones: (filters: {
-    type?: string;
-    completed?: boolean;
-  }) => UserMilestone[];
+  filterMilestones: (filters: { type?: string; completed?: boolean }) => UserMilestone[];
 }
 
 const useMilestoneStore = create<MilestoneState>()(
@@ -37,9 +34,10 @@ const useMilestoneStore = create<MilestoneState>()(
         })),
       filterMilestones: ({ type, completed }) => {
         const { milestones } = get();
-        return milestones.filter((milestone) => 
-          (!type || milestone.type === type) && 
-          (completed === undefined || milestone.completed === completed)
+        return milestones.filter(
+          (milestone) =>
+            (!type || milestone.type === type) &&
+            (completed === undefined || milestone.completed === completed)
         );
       },
     }),

@@ -16,9 +16,10 @@
 # next.js
 /.next/
 /out/
+/build
 
 # production
-/build
+/dist
 
 # misc
 .DS_Store
@@ -48,16 +49,101 @@ yarn-error.log*
 .vscode/
 *.swp
 *.swo
+*.swn
+*~
 
-# Logs
-logs
+# Backup and temporary files
+*.bak
+*.tmp
+*.orig
 *.log
 
-# Temporary files
-*.tmp
-*.bak
+# Dependency and package management
+node_modules/
+jspm_packages/
+.npm
+.yarn/cache
+.yarn/unplugged
+.pnp.*
 
-# Security and sensitive configuration
-secrets/
-*.credentials
-.secrets/
+# Build and development artifacts
+.cache/
+.parcel-cache/
+.vercel/
+.firebase/
+*.tsbuildinfo
+
+# Typescript build info
+*.tsbuildinfo
+
+# Specific project exclusions
+/scripts/fix-lint.js
+/public/patterns/
+/localhost_*.report.html
+.windsurfrules
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.local
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v2
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*

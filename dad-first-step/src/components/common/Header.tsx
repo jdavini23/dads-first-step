@@ -8,7 +8,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/config/firebase';
 
 export const Header = () => {
-  const user = useAuthStore((state) => state.user);
+  const _user = useAuthStore((state) => state._user);
   const setUser = useAuthStore((state) => state.setUser);
 
   const handleSignOut = async () => {
@@ -32,11 +32,11 @@ export const Header = () => {
 
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <nav className="flex items-center">
-            {user ? (
+            {_user ? (
               <div className="flex items-center space-x-4">
-                {user.photoURL && (
+                {_user.photoURL && (
                   <Image
-                    src={user.photoURL}
+                    src={_user.photoURL}
                     alt="Profile"
                     width={32}
                     height={32}

@@ -1,0 +1,62 @@
+version: 2
+updates:
+  # NPM Dependency Updates
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "America/Los_Angeles"
+    
+    # Group updates
+    groups:
+      # Group non-breaking updates
+      core-dependencies:
+        patterns:
+          - "react"
+          - "next"
+          - "typescript"
+        update-types: 
+          - "minor"
+          - "patch"
+      
+      # Separate major version updates
+      major-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+    
+    # Labels for different types of updates
+    labels:
+      - "dependencies"
+      - "npm"
+    
+    # Limit open PRs and specify reviewers
+    open-pull-requests-limit: 10
+    reviewers:
+      - "jdavini23"
+    
+    # Ignore specific packages or versions
+    ignore:
+      - dependency-name: "next"
+        versions: ["15.x"]
+      - dependency-name: "react"
+        versions: ["19.x"]
+      
+      # Ignore packages that might break compatibility
+      - dependency-name: "@types/react"
+      - dependency-name: "@types/node"
+  
+  # GitHub Actions Dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    
+    labels:
+      - "dependencies"
+      - "github-actions"
+    
+    open-pull-requests-limit: 5

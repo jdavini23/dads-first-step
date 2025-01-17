@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -16,12 +16,13 @@ export default function AboutPage() {
           className="max-w-4xl mx-auto"
         >
           <h1 className="text-5xl font-bold mb-8 text-center">About Dad&apos;s First Step</h1>
-          
+
           <div className="prose prose-lg mx-auto">
             <p className="text-xl text-gray-600 mb-8">
-              Dad&apos;s First Step is more than just a milestone tracking app - it&apos;s your companion
-              through the incredible journey of fatherhood. We understand that becoming a dad is a
-              transformative experience filled with joy, challenges, and countless precious moments.
+              Dad&apos;s First Step is more than just a milestone tracking app - it&apos;s your
+              companion through the incredible journey of fatherhood. We understand that becoming a
+              dad is a transformative experience filled with joy, challenges, and countless precious
+              moments.
             </p>
 
             <h2 className="text-3xl font-bold mb-6">Our Mission</h2>

@@ -6,7 +6,12 @@ import { Label } from '@/components/ui/Label';
 import { Select } from '@/components/ui/Select';
 import { useMilestoneStore } from '@/stores/milestoneStore';
 import { useUserStore } from '@/stores/userStore';
-import { MilestoneType, MilestoneDifficulty, UserMilestone, MilestoneCategory } from '@/types/milestone';
+import {
+  MilestoneType,
+  MilestoneDifficulty,
+  UserMilestone,
+  MilestoneCategory,
+} from '@/types/milestone';
 
 interface MilestoneDialogProps {
   isOpen: boolean;
@@ -16,11 +21,13 @@ interface MilestoneDialogProps {
 export const MilestoneDialog: React.FC<MilestoneDialogProps> = ({ isOpen, onClose }) => {
   const { addMilestone } = useMilestoneStore();
   const { _user } = useUserStore();
-  
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<MilestoneType>('COGNITIVE' as MilestoneType);
-  const [difficulty, setDifficulty] = useState<MilestoneDifficulty>('MEDIUM' as MilestoneDifficulty);
+  const [difficulty, setDifficulty] = useState<MilestoneDifficulty>(
+    'MEDIUM' as MilestoneDifficulty
+  );
   const [date, setDate] = useState<Date>(new Date());
   const [category, setCategory] = useState<MilestoneCategory>('CUSTOM' as MilestoneCategory);
 
@@ -36,7 +43,7 @@ export const MilestoneDialog: React.FC<MilestoneDialogProps> = ({ isOpen, onClos
       difficulty,
       date,
       completed: false,
-      category
+      category,
     };
 
     addMilestone(newMilestone);
@@ -81,10 +88,7 @@ export const MilestoneDialog: React.FC<MilestoneDialogProps> = ({ isOpen, onClos
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label>Type</Label>
-              <Select
-                value={type}
-                onChange={(e) => setType(e.target.value as MilestoneType)}
-              >
+              <Select value={type} onChange={(e) => setType(e.target.value as MilestoneType)}>
                 <option value="COGNITIVE">Cognitive</option>
                 <option value="PHYSICAL">Physical</option>
                 <option value="SOCIAL">Social</option>
