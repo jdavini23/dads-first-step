@@ -92,13 +92,24 @@ const FeatureCard: React.FC<FeatureCardProps> = React.memo(
 FeatureCard.displayName = 'FeatureCard';
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm lg:flex">
-        <h1 className="text-4xl font-bold text-center">
-          Welcome to Dad&apos;s First Step
-        </h1>
+  console.log('Home component rendering');
+  
+  try {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm lg:flex">
+          <h1 className="text-4xl font-bold text-center">
+            Welcome to Dad&apos;s First Step
+          </h1>
+        </div>
+      </main>
+    );
+  } catch (error) {
+    console.error('Error rendering Home component:', error);
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Error loading page: {error instanceof Error ? error.message : 'Unknown error'}</p>
       </div>
-    </main>
-  );
+    );
+  }
 }

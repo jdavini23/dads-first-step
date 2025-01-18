@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useMilestoneStore } from '@/stores/milestoneStore';
 import { useAuthStore } from '@/stores/authStore';
 import { getMilestonesForUser } from '@/services/milestoneService';
 import { Button } from '@/components/ui/Button';
 import { TypedLink } from '@/components/common/TypedLink';
+import { Routes, Route } from '@/types/routes';
 
 export function MilestoneOverview() {
   const { _user } = useAuthStore();
@@ -67,7 +68,7 @@ export function MilestoneOverview() {
                 {pendingMilestones.map((milestone) => (
                   <li key={milestone.id} className="flex items-center justify-between">
                     <span>{milestone.title}</span>
-                    <TypedLink route="MILESTONES" className="text-blue-500 hover:underline">
+                    <TypedLink route={Routes.MILESTONES as Route} className="text-blue-500 hover:underline">
                       Edit
                     </TypedLink>
                   </li>

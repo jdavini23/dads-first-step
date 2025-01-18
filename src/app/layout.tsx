@@ -27,8 +27,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log('RootLayout rendering', { children });
+  
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script 
+          dangerouslySetInnerHTML={{
+            __html: `console.log('Layout script executing');`
+          }}
+        />
+      </head>
       <body className={`${inter.variable} ${montserrat.variable} font-body antialiased pt-20`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthInitializer />
@@ -36,6 +45,11 @@ export default function RootLayout({
           {children}
           <Toaster />
         </ThemeProvider>
+        <script 
+          dangerouslySetInnerHTML={{
+            __html: `console.log('Body script executing');`
+          }}
+        />
       </body>
     </html>
   );

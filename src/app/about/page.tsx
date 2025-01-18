@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import * as React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { 
@@ -13,6 +13,7 @@ import {
   HiOutlineGlobe
 } from 'react-icons/hi';
 import { Button } from '@/components/ui/Button';
+import { useRouter } from 'next/navigation';
 
 // Reusable Components
 const SectionHeader = ({ title, subtitle }: { title: string, subtitle: string }) => (
@@ -46,6 +47,7 @@ const FeatureCard = ({
 );
 
 export default function AboutPage() {
+  const router = useRouter();
   return (
     <div className="bg-gradient-to-br from-primary-50 to-white min-h-screen">
       {/* Hero Section */}
@@ -67,20 +69,17 @@ export default function AboutPage() {
             </p>
             <div className="flex space-x-4">
               <Button 
-                size="lg" 
                 className="hover:scale-105 transition-transform"
-                onClick={() => window.location.href = '/milestones'}
+                onClick={() => router.push('/milestones')}
               >
                 Start Your Journey
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="hover:scale-105 transition-transform"
-                onClick={() => window.location.href = '/discover'}
+              <button 
+                className="bg-primary-600 text-white px-6 py-3 rounded-lg hover:scale-105 transition-transform"
+                onClick={() => router.push('/discover')}
               >
                 Learn More
-              </Button>
+              </button>
             </div>
           </motion.div>
           
@@ -195,10 +194,8 @@ export default function AboutPage() {
             every precious moment with Dad&apos;s First Step.
           </p>
           <Button 
-            size="lg" 
-            variant="default" 
             className="hover:scale-105 transition-transform"
-            onClick={() => window.location.href = '/signup'}
+            onClick={() => router.push('/signup')}
           >
             Create Your Free Account
           </Button>

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { UrlObject } from 'url';
 import type { LinkProps } from 'next/link';
 
@@ -100,3 +100,5 @@ export function asHref(
 export function resolveRoute(route: Route | string): string {
   return typeof route === 'string' ? Routes[route as Route] || route : Routes[route];
 }
+
+export type TypedLinkRoute = keyof typeof Routes | string;

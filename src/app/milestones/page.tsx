@@ -1,12 +1,12 @@
 'use client';
 
-import React from 'react';
+import * as React from 'react';
 import Image from 'next/image';
 import { useAuthStore } from '@/stores/authStore';
 import { MilestoneTracker } from '@/components/features/MilestoneTracker';
 import { Button } from '@/components/ui/Button';
 import { TypedLink } from '@/components/common/TypedLink';
-import { Routes } from '@/types/routes';
+import { Routes, Route } from '@/types/routes';
 import { motion } from 'framer-motion';
 
 const fadeInUp = {
@@ -102,7 +102,7 @@ export default function MilestonesPage() {
           </p>
           
           <div className="flex justify-center space-x-4">
-            <TypedLink route={Routes.SIGN_UP}>
+            <TypedLink route="SIGN_UP">
               <Button 
                 variant="default" 
                 size="lg" 
@@ -111,7 +111,7 @@ export default function MilestonesPage() {
                 Start Your Journey
               </Button>
             </TypedLink>
-            <TypedLink route={Routes.AUTH}>
+            <TypedLink route="AUTH">
               <Button 
                 variant="outline" 
                 size="lg" 

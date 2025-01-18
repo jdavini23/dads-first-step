@@ -12,7 +12,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)', ...fontFamily.sans],
+        sans: ['var(--font-inter)', ...fontFamily.sans],
+        body: ['var(--font-montserrat)', ...fontFamily.sans],
         mono: ['var(--font-geist-mono)', ...fontFamily.mono]
       },
       colors: {

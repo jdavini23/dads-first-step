@@ -1,6 +1,6 @@
 'use client';
 
-import { Routes, Route, isValidRoute } from '@/types/routes';
+import { Routes, Route, TypedLinkRoute } from '@/types/routes';
 import { TypedLink } from '@/components/common/TypedLink';
 import { useNavigation } from '@/utils/navigation';
 import { useState, useEffect, useRef } from 'react';
@@ -14,28 +14,39 @@ import { SignInButton } from '@/components/auth/SignInButton';
 const navLinks = [
   {
     label: 'Home',
-    route: 'HOME' as Route,
+    route: Routes.HOME,
     dropdown: false,
   },
   {
     label: 'Features',
-    route: 'FEATURES' as Route,
+    route: Routes.FEATURES,
     dropdown: true,
     children: [
-      { label: 'Milestone Tracking', route: 'MILESTONES' as Route },
-      { label: 'Resources', route: 'RESOURCES' as Route },
+      { label: 'Milestone Tracking', route: Routes.MILESTONES },
+      { label: 'Resources', route: Routes.RESOURCES },
     ],
   },
   {
     label: 'Community',
-    route: 'ABOUT' as Route,
+    route: Routes.ABOUT,
     dropdown: true,
     children: [
-      { label: 'Testimonials', route: 'TESTIMONIALS' as Route },
-      { label: 'About', route: 'ABOUT' as Route },
-      { label: 'Contact', route: 'CONTACT' as Route },
+      { label: 'Testimonials', route: Routes.TESTIMONIALS },
+      { label: 'About Us', route: Routes.ABOUT },
+      { label: 'Contact', route: Routes.CONTACT },
     ],
   },
+];
+
+const mobileNavLinks = [
+  { label: 'Milestone Tracking', route: Routes.MILESTONES },
+  { label: 'Resources', route: Routes.RESOURCES },
+];
+
+const communityLinks = [
+  { label: 'Testimonials', route: Routes.TESTIMONIALS },
+  { label: 'About Us', route: Routes.ABOUT },
+  { label: 'Contact', route: Routes.CONTACT },
 ];
 
 export function Navbar() {
@@ -97,7 +108,7 @@ export function Navbar() {
     setActiveDropdown(activeDropdown === label ? null : label);
   };
 
-  const renderDropdownLinks = (links: { label: string; route: Route }[], parentLabel: string) => (
+  const renderDropdownLinks = (links: { label: string; route: keyof typeof Routes }[], parentLabel: string) => (
     <div
       className={`absolute top-full left-0 min-w-[200px] bg-white shadow-lg rounded-lg border border-neutral-100 py-2 z-50 transition-all duration-200 ease-in-out ${
         hoverDropdown === parentLabel
@@ -117,7 +128,7 @@ export function Navbar() {
     </div>
   );
 
-  const renderMobileDropdownLinks = (links: { label: string; route: Route }[], parentLabel: string) => (
+  const renderMobileDropdownLinks = (links: { label: string; route: TypedLinkRoute }[], parentLabel: string) => (
     <div className="pl-4 mt-2">
       {links.map((child, index) => (
         <TypedLink
@@ -135,6 +146,10 @@ export function Navbar() {
     </div>
   );
 
+  const handleNavigation = (route: Route) => {
+    // Add navigation logic here
+  };
+
   return (
     <nav
       ref={navRef}
@@ -142,7 +157,10 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between relative">
         {/* Logo */}
-        <TypedLink route="HOME" className="flex items-center space-x-2 group">
+        <TypedLink
+          route={Routes.HOME}
+          className="flex items-center space-x-2 group"
+        >
           <Image
             src="/logo.svg"
             alt="Dad's First Step Logo"
@@ -165,7 +183,10 @@ export function Navbar() {
               onMouseLeave={() => setHoverDropdown(null)}
             >
               <div className="flex items-center text-neutral-700 hover:text-primary-600 transition-colors cursor-pointer py-3">
-                <TypedLink route={link.route} className="flex items-center">
+                <TypedLink
+                  route={link.route}
+                  className="flex items-center"
+                >
                   {link.label}
                 </TypedLink>
                 {link.dropdown && (
@@ -260,7 +281,7 @@ export function Navbar() {
                         }}
                       >
                         <TypedLink 
-                          route={link.route} 
+                          route={link.route}
                           className="flex-grow hover:text-primary-600 transition-colors"
                           onClick={() => setIsMenuOpen(false)}
                         >
@@ -279,8 +300,8 @@ export function Navbar() {
                         <div className="pl-4 mt-2 space-y-2">
                           {link.children.map((child) => (
                             <TypedLink 
-                              key={child.route} 
-                              route={child.route} 
+                              key={child.route}
+                              route={child.route}
                               className="block py-2 text-neutral-600 hover:text-primary-600 transition-colors"
                               onClick={() => {
                                 setIsMenuOpen(false);
@@ -312,6 +333,30 @@ export function Navbar() {
           </>
         )}
       </AnimatePresence>
+      <TypedLink
+        route={Routes.SIGN_UP}
+        className="hidden lg:block"
+      >
+        Sign Up
+      </TypedLink>
+      <TypedLink
+        route={Routes.HOME}
+        className="flex items-center gap-2"
+      >
+        Home
+      </TypedLink>
+      <TypedLink
+        route={Routes.SIGN_UP}
+        className="flex items-center gap-2"
+      >
+        Sign Up
+      </TypedLink>
+      <Button
+        variant="default"
+        className="w-full justify-start lg:w-auto lg:justify-center"
+      >
+        Get Started
+      </Button>
     </nav>
   );
 }

@@ -1,15 +1,17 @@
-import React from 'react';
+import * as React from 'react';
 import Link, { LinkProps } from 'next/link';
-import { Route, Routes, RouteValue, ExtendedRouteValue } from '@/types/routes';
+import { Route, Routes, RouteValue, ExtendedRouteValue, TypedLinkRoute } from '@/types/routes';
 import { UrlObject } from 'url';
 
 /**
  * Props for the TypedLink component
  */
-type TypedLinkProps = Omit<React.ComponentProps<typeof Link>, 'href'> & {
-  route?: Route;
-  href?: RouteValue | ExtendedRouteValue;
-};
+type TypedLinkProps = 
+  Omit<React.ComponentProps<typeof Link>, 'href'> & {
+    route?: Route;
+    href?: RouteValue | ExtendedRouteValue;
+    children: React.ReactNode;
+  };
 
 /**
  * Type-safe link component that ensures only valid routes are used
@@ -22,7 +24,7 @@ export function TypedLink({
 }: TypedLinkProps): React.ReactElement {
   // Determine the final href
   const linkHref = route 
-    ? Routes[route] 
+    ? (Routes[route])
     : href;
 
   // Ensure we always have a valid href
